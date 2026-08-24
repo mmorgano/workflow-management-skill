@@ -191,8 +191,8 @@ PY
             key="${file_date:0:7}"  # YYYY-MM
         else
             # Sprint grouping: use the explicit, locale-independent Sprint ID.
-            sprint_id=$(sed -n 's/^- \*\*Sprint ID\*\*: \([0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}\)$/\1/p' "$f" | head -1 || echo "")
-            if [[ -n "$sprint_id" ]]; then
+            sprint_id=$(awk -F ': ' '/^- \*\*Sprint ID\*\*:/ { print $2; exit }' "$f" 2>/dev/null || true)
+            if [[ "$sprint_id" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
                 key="sprint-$sprint_id"
             else
                 key="${file_date:0:7}"

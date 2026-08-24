@@ -4,6 +4,8 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
+OLD_DATE="$(date -d '90 days ago' +%F)"
+SECOND_DATE="$(date -d "$OLD_DATE + 1 day" +%F)"
 
 bash -n "$ROOT/setup-skills.sh"
 bash -n "$ROOT/compact-sessions.sh"
@@ -27,32 +29,35 @@ EOF
 cat > "$TMP/skill-workflow-management/context-path.json" <<EOF
 {"ai_context_root":"$TMP/context"}
 EOF
-cat > "$TMP/context/sessions/SESSION_2026-07-01.md" <<'EOF'
+cat > "$TMP/context/sessions/SESSION_${OLD_DATE}.md" <<EOF
 ## Current sprint
-- **Sprint ID**: 2026-07-01
+- **Sprint ID**: $OLD_DATE
 ## Work done
 - Test
 EOF
 
-XDG_CONFIG_HOME="$TMP" "$ROOT/compact-sessions.sh" --dry-run | grep -q 'sprint-2026-07-01'
+XDG_CONFIG_HOME="$TMP" "$ROOT/compact-sessions.sh" --dry-run > "$TMP/dry-run.txt"
+grep -Fq "sprint-$OLD_DATE" "$TMP/dry-run.txt"
 
 # English template headings must make it into the real archive recap.
 XDG_CONFIG_HOME="$TMP" "$ROOT/compact-sessions.sh"
-grep -Fq '| 2026-07-01 | Test |' "$TMP/context/sessions/archive/sprint-2026-07-01.md"
-unzip -tqq "$TMP/context/sessions/archive/sprint-2026-07-01.zip"
-test -f "$TMP/context/sessions/archive/originals/sprint-2026-07-01/SESSION_2026-07-01.md"
+grep -Fq "| $OLD_DATE | Test |" "$TMP/context/sessions/archive/sprint-$OLD_DATE.md"
+unzip -tqq "$TMP/context/sessions/archive/sprint-$OLD_DATE.zip"
+test -f "$TMP/context/sessions/archive/originals/sprint-$OLD_DATE/SESSION_${OLD_DATE}.md"
 
 # A later compaction for the same group must keep both archive summaries and
 # source files rather than overwriting the earlier result.
-cat > "$TMP/context/sessions/SESSION_2026-07-02.md" <<'EOF'
+cat > "$TMP/context/sessions/SESSION_${SECOND_DATE}.md" <<EOF
+## Current sprint
+- **Sprint ID**: $OLD_DATE
 ## Work done
 - Follow-up | with table character
 EOF
 XDG_CONFIG_HOME="$TMP" "$ROOT/compact-sessions.sh"
-grep -Fq '| 2026-07-01 | Test |' "$TMP/context/sessions/archive/sprint-2026-07-01.md"
-grep -Fq '| 2026-07-02 | Follow-up \| with table character |' "$TMP/context/sessions/archive/sprint-2026-07-01.md"
-unzip -tqq "$TMP/context/sessions/archive/sprint-2026-07-01.zip"
-test -f "$TMP/context/sessions/archive/originals/sprint-2026-07-01/SESSION_2026-07-02.md"
+grep -Fq "| $OLD_DATE | Test |" "$TMP/context/sessions/archive/sprint-$OLD_DATE.md"
+grep -Fq "| $SECOND_DATE | Follow-up \\| with table character |" "$TMP/context/sessions/archive/sprint-$OLD_DATE.md"
+unzip -tqq "$TMP/context/sessions/archive/sprint-$OLD_DATE.zip"
+test -f "$TMP/context/sessions/archive/originals/sprint-$OLD_DATE/SESSION_${SECOND_DATE}.md"
 
 # Invalid numeric configuration must fail safely rather than be evaluated.
 cat > "$TMP/context/.workflow-config.json" <<EOF
