@@ -14,8 +14,8 @@
 
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-SKILL_FILE="$SCRIPT_DIR/SKILL.md"
+CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/skill-workflow-management"
+GLOBAL_CONFIG_FILE="$CONFIG_DIR/config.json"
 
 DRY_RUN=false
 
@@ -30,9 +30,11 @@ for arg in "$@"; do
     esac
 done
 
-# Resolve AI_CONTEXT_ROOT
+# Resolve AI_CONTEXT_ROOT from the explicit argument or global configuration.
 if [[ -z "$CTX_ROOT" ]]; then
-    CTX_ROOT=$(sed -n 's/^> \*\*AI_CONTEXT_ROOT\*\*: `\(.*\)`$/\1/p' "$SKILL_FILE" 2>/dev/null | head -1)
+    if [[ -f "$GLOBAL_CONFIG_FILE" ]]; then
+        CTX_ROOT=$(python3 -c "import json; print(json.load(open('$GLOBAL_CONFIG_FILE')).get('ai_context_root', ''))" 2>/dev/null || true)
+    fi
 fi
 
 if [[ -z "$CTX_ROOT" || ! -d "$CTX_ROOT" ]]; then
@@ -40,7 +42,10 @@ if [[ -z "$CTX_ROOT" || ! -d "$CTX_ROOT" ]]; then
     exit 1
 fi
 
-CONFIG_FILE="$CTX_ROOT/.workflow-config.json"
+CONFIG_FILE="$GLOBAL_CONFIG_FILE"
+if [[ -f "$CTX_ROOT/.workflow-config.json" ]]; then
+    CONFIG_FILE="$CTX_ROOT/.workflow-config.json"
+fi
 SESSIONS_DIR="$CTX_ROOT/sessions"
 ARCHIVE_DIR="$SESSIONS_DIR/archive"
 

@@ -10,12 +10,12 @@
 #   2. Sprint mode (enabled/disabled, duration)
 #   3. Session compaction (retention days, grouping)
 #
-# Configuration is saved to: <AI_CONTEXT_ROOT>/.workflow-config.json
+# Configuration is saved to: ~/.config/skill-workflow-management/config.json
 
 set -euo pipefail
 
-SKILL_DIR="$(cd "$(dirname "$0")" && pwd)"
-SKILL_FILE="$SKILL_DIR/SKILL.md"
+CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/skill-workflow-management"
+CONFIG_FILE="$CONFIG_DIR/config.json"
 
 # --- Helpers ---
 
@@ -46,14 +46,7 @@ ask_number() {
     done
 }
 
-update_skill_path() {
-    local new_path="$1"
-    local escaped
-    escaped=$(printf '%s\n' "$new_path" | sed 's/[&|]/\\&/g')
-    sed -i "s|> \*\*AI_CONTEXT_ROOT\*\*: \`[^\`]*\`|> **AI_CONTEXT_ROOT**: \`${escaped}\`|" "$SKILL_FILE"
-}
-
-# --- Non-interactive mode (backward compat) ---
+# --- Non-interactive mode ---
 
 if [[ "${1:-}" == "--path" && -n "${2:-}" ]]; then
     NEW_PATH="$2"
@@ -61,8 +54,9 @@ if [[ "${1:-}" == "--path" && -n "${2:-}" ]]; then
         echo "ERROR: Path must be absolute (start with /). Got: $NEW_PATH"
         exit 1
     fi
-    update_skill_path "$NEW_PATH"
-    echo "✓ AI_CONTEXT_ROOT updated to: $NEW_PATH"
+    mkdir -p "$CONFIG_DIR"
+    printf '{\n  "version": "1.1.0",\n  "ai_context_root": "%s"\n}\n' "$NEW_PATH" > "$CONFIG_FILE"
+    echo "✓ Configuration saved: $CONFIG_FILE"
     exit 0
 fi
 
@@ -80,7 +74,10 @@ echo "Where should session files, tasks, and sprint data be stored?"
 echo "This must be an absolute path to an existing (or new) directory."
 echo ""
 
-current_path=$(sed -n 's/^> \*\*AI_CONTEXT_ROOT\*\*: `\(.*\)`$/\1/p' "$SKILL_FILE" 2>/dev/null | head -1)
+current_path=""
+if [[ -f "$CONFIG_FILE" ]]; then
+    current_path=$(python3 -c "import json; print(json.load(open('$CONFIG_FILE')).get('ai_context_root', ''))" 2>/dev/null || true)
+fi
 if [[ -n "$current_path" ]]; then
     echo "  Current: $current_path"
 fi
@@ -161,11 +158,11 @@ echo ""
 
 # --- Write config ---
 
-CONFIG_FILE="$CTX_ROOT/.workflow-config.json"
+mkdir -p "$CONFIG_DIR"
 
 cat > "$CONFIG_FILE" <<EOF
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "ai_context_root": "$CTX_ROOT",
   "sprint": {
     "enabled": $SPRINT_ENABLED,
@@ -180,11 +177,6 @@ cat > "$CONFIG_FILE" <<EOF
 EOF
 
 echo "✓ Configuration saved: $CONFIG_FILE"
-
-# --- Update SKILL.md path ---
-
-update_skill_path "$CTX_ROOT"
-echo "✓ SKILL.md updated with AI_CONTEXT_ROOT: $CTX_ROOT"
 
 # --- Ensure directory structure ---
 
