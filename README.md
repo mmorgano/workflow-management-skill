@@ -28,6 +28,8 @@ The result: no context lost between sessions, full audit trail of decisions, and
 
 ## Setup
 
+For a ready-made starting structure, see [`examples/basic-ai-context`](examples/basic-ai-context).
+
 ### Quick start (interactive wizard)
 
 ```bash
