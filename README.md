@@ -134,9 +134,9 @@ You can edit this file directly or re-run the wizard.
 
 Over time, daily session files accumulate. Compaction keeps the `sessions/` directory lean while preserving full history.
 
-> **Important:** a non-dry-run compaction creates a ZIP archive and then removes
-> the original session files. Always run it with `--dry-run` first and keep the
-> resulting archives in version control or a backed-up location.
+> **Important:** a non-dry-run compaction verifies the ZIP and then moves the
+> original files into `sessions/archive/originals/`. Use `--delete-originals`
+> only when you deliberately want to remove them after that verification.
 
 ### What happens
 

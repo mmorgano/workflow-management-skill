@@ -5,6 +5,7 @@
 #   ./compact-sessions.sh                    # Uses config from AI_CONTEXT_ROOT
 #   ./compact-sessions.sh /path/to/ai-context
 #   ./compact-sessions.sh --dry-run          # Show what would be done
+#   ./compact-sessions.sh --delete-originals # Delete only after ZIP verification
 #
 # Reads configuration from <AI_CONTEXT_ROOT>/.workflow-config.json
 # Keeps the most recent N days of sessions intact (default: 30)
@@ -18,6 +19,7 @@ CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/skill-workflow-management"
 GLOBAL_CONFIG_FILE="$CONFIG_DIR/config.json"
 
 DRY_RUN=false
+DELETE_ORIGINALS=false
 
 # --- Parse args ---
 
@@ -25,6 +27,7 @@ CTX_ROOT=""
 for arg in "$@"; do
     case "$arg" in
         --dry-run) DRY_RUN=true ;;
+        --delete-originals) DELETE_ORIGINALS=true ;;
         /*) CTX_ROOT="$arg" ;;
         *) echo "Unknown argument: $arg"; exit 1 ;;
     esac
@@ -101,6 +104,7 @@ echo "  Effective retention:  ${EFFECTIVE_RETENTION} days (max of configured + b
 echo "  Cutoff date:          $CUTOFF_DATE (files older than this will be archived)"
 echo "  Group by:             $GROUP_BY"
 echo "  Dry run:              $DRY_RUN"
+echo "  Delete originals:     $DELETE_ORIGINALS"
 echo ""
 
 # Collect session files older than cutoff
@@ -164,6 +168,11 @@ for key in $(echo "${!MONTH_FILES[@]}" | tr ' ' '\n' | sort); do
         done
         echo "    Would create: $recap_file"
         echo "    Would create: $zip_file"
+        if [[ "$DELETE_ORIGINALS" == "true" ]]; then
+            echo "    Would delete original files after verification"
+        else
+            echo "    Would move original files to: $ARCHIVE_DIR/originals/$key"
+        fi
         echo ""
         continue
     fi
@@ -197,14 +206,25 @@ for key in $(echo "${!MONTH_FILES[@]}" | tr ' ' '\n' | sort); do
     # Create zip archive
     (cd "$SESSIONS_DIR" && zip -q "$zip_file" $(for f in "${files[@]}"; do basename "$f"; done))
 
-    # Remove original files
-    for f in "${files[@]}"; do
-        rm "$f"
-    done
+    # Verify the archive before touching original files.
+    if ! unzip -tqq "$zip_file"; then
+        echo "ERROR: Archive verification failed; originals were left untouched."
+        rm -f "$zip_file"
+        exit 1
+    fi
+
+    if [[ "$DELETE_ORIGINALS" == "true" ]]; then
+        rm -- "${files[@]}"
+        echo "    ✓ Deleted ${#files[@]} original file(s) after verification"
+    else
+        recovery_dir="$ARCHIVE_DIR/originals/$key"
+        mkdir -p "$recovery_dir"
+        mv -- "${files[@]}" "$recovery_dir/"
+        echo "    ✓ Moved ${#files[@]} original file(s) to: $recovery_dir"
+    fi
 
     echo "    ✓ Created: $(basename "$recap_file")"
     echo "    ✓ Created: $(basename "$zip_file")"
-    echo "    ✓ Removed ${#files[@]} original file(s)"
     echo ""
 done
 
