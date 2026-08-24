@@ -123,11 +123,10 @@ for f in "$SESSIONS_DIR"/SESSION_*.md; do
         if [[ "$GROUP_BY" == "month" ]]; then
             key="${file_date:0:7}"  # YYYY-MM
         else
-            # Sprint grouping: use sprint start date from file content, fallback to month
-            sprint_date=$(grep -oP 'dal \K\d{2}/\d{2}/\d{4}' "$f" 2>/dev/null | head -1 || echo "")
-            if [[ -n "$sprint_date" ]]; then
-                # Convert DD/MM/YYYY to YYYY-MM-DD for key
-                key="sprint-$(echo "$sprint_date" | awk -F/ '{print $3"-"$2"-"$1}')"
+            # Sprint grouping: use the explicit, locale-independent Sprint ID.
+            sprint_id=$(sed -n 's/^- \*\*Sprint ID\*\*: \([0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}\)$/\1/p' "$f" | head -1 || echo "")
+            if [[ -n "$sprint_id" ]]; then
+                key="sprint-$sprint_id"
             else
                 key="${file_date:0:7}"
             fi

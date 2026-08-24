@@ -132,7 +132,8 @@ ai-context/
 # Session — YYYY-MM-DD
 
 ## Current sprint
-Sprint N — from DD/MM/YYYY to DD/MM/YYYY
+- **Sprint ID**: YYYY-MM-DD
+- **Period**: DD/MM/YYYY → DD/MM/YYYY
 
 ## Work done
 -
