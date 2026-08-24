@@ -1,13 +1,14 @@
-# skill-workflow-management
+# workflow-management-skill
 
-A portable Kiro skill for structured daily work sessions, task tracking, optional
-sprints, and safe session archival. It is intentionally project-agnostic: choose
-your own context directory during setup and adapt any issue-tracker conventions
-to your team.
+A portable workflow-management core for AI coding agents, with structured daily
+work sessions, task tracking, optional sprints, and safe session archival. It
+is intentionally project-agnostic: choose your own context directory during
+setup and adapt any issue-tracker conventions to your team.
 
 ## What it does
 
-This skill teaches Kiro a **structured daily workflow management method**. When activated, Kiro knows how to:
+The workflow gives a supported AI agent a **structured daily work-management
+method**. When activated, the agent can:
 
 - Open and close **daily sessions** (a work diary with decisions, blockers, next steps)
 - Manage **sprints** (optional, configurable duration) with tickets and technical tasks
@@ -18,9 +19,20 @@ This skill teaches Kiro a **structured daily workflow management method**. When 
 
 The result: no context lost between sessions, full audit trail of decisions, and a repeatable workflow that reduces cognitive load.
 
+## Agent support
+
+| Agent | Status | Adapter / installation |
+|-------|--------|------------------------|
+| Kiro | Supported | Root `SKILL.md`; existing installation path is retained |
+| Codex | Initial adapter — needs in-app validation | [`adapters/codex/SKILL.md`](adapters/codex/SKILL.md) |
+| Other agents | Experimental | Implement the contract in [`CORE.md`](CORE.md) |
+
+The shell scripts and context format are shared by every adapter. See
+[`CORE.md`](CORE.md) for the platform-independent contract.
+
 ## Prerequisites
 
-- **Kiro** with skill support (`~/.kiro/skills/` directory)
+- A supported AI agent and its matching adapter
 - An `ai-context/` directory in your project (see Setup section)
 - Basic familiarity with bash terminal
 - `python3` available (for config file parsing in compaction script)
@@ -45,7 +57,7 @@ The wizard will ask you:
 2. **Sprint management** — enable/disable, and if enabled: duration in weeks
 3. **Session compaction** — enable/disable, retention period, grouping method
 
-Configuration is saved to `<AI_CONTEXT_ROOT>/.workflow-config.json` and used by Kiro at session start. The wizard also stores only a local pointer to that context so the compaction command can be invoked without an explicit path.
+Configuration is saved to `<AI_CONTEXT_ROOT>/.workflow-config.json` and used by the active agent at session start. The wizard also stores only a local pointer to that context so the compaction command can be invoked without an explicit path.
 
 ### Non-interactive (path only, backward compatible)
 
