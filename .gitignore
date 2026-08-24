@@ -7,3 +7,7 @@ meetings/
 RECAP.md
 LAST_SESSION.md
 
+# Keep the starter example in version control.
+!examples/
+!examples/**/
+!examples/**
