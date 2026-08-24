@@ -108,7 +108,7 @@ echo "  Delete originals:     $DELETE_ORIGINALS"
 echo ""
 
 # Collect session files older than cutoff
-declare -A MONTH_FILES  # month -> space-separated file list
+declare -A MONTH_FILES  # group key -> newline-separated file list
 FILES_TO_ARCHIVE=()
 
 for f in "$SESSIONS_DIR"/SESSION_*.md; do
@@ -141,7 +141,7 @@ for f in "$SESSIONS_DIR"/SESSION_*.md; do
             fi
         fi
 
-        MONTH_FILES["$key"]="${MONTH_FILES[$key]:-} $f"
+        MONTH_FILES["$key"]+="$f"$'\n'
     fi
 done
 
@@ -156,7 +156,7 @@ echo ""
 # --- Process each group ---
 
 for key in $(echo "${!MONTH_FILES[@]}" | tr ' ' '\n' | sort); do
-    files=(${MONTH_FILES[$key]})
+    mapfile -t files < <(printf '%s' "${MONTH_FILES[$key]}" | sort)
     recap_file="$ARCHIVE_DIR/${key}.md"
     zip_file="$ARCHIVE_DIR/${key}.zip"
 
@@ -184,7 +184,7 @@ for key in $(echo "${!MONTH_FILES[@]}" | tr ' ' '\n' | sort); do
         echo "| Date | Summary |"
         echo "|------|---------|"
 
-        for f in $(echo "${files[@]}" | tr ' ' '\n' | sort); do
+        for f in "${files[@]}"; do
             basename=$(basename "$f")
             file_date="${basename#SESSION_}"
             file_date="${file_date%.md}"
@@ -204,7 +204,7 @@ for key in $(echo "${!MONTH_FILES[@]}" | tr ' ' '\n' | sort); do
     } > "$recap_file"
 
     # Create zip archive
-    (cd "$SESSIONS_DIR" && zip -q "$zip_file" $(for f in "${files[@]}"; do basename "$f"; done))
+    (cd "$SESSIONS_DIR" && zip -q "$zip_file" -- "${files[@]##*/}")
 
     # Verify the archive before touching original files.
     if ! unzip -tqq "$zip_file"; then
