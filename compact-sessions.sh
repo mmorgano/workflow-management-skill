@@ -51,6 +51,17 @@ if [[ -z "$CTX_ROOT" || ! -d "$CTX_ROOT" ]]; then
     exit 1
 fi
 
+require_command() {
+    if ! command -v "$1" >/dev/null 2>&1; then
+        echo "ERROR: Required command not found: $1" >&2
+        exit 1
+    fi
+}
+
+require_command python3
+require_command zip
+require_command unzip
+
 CONFIG_FILE="$CTX_ROOT/.workflow-config.json"
 SESSIONS_DIR="$CTX_ROOT/sessions"
 ARCHIVE_DIR="$SESSIONS_DIR/archive"
@@ -224,8 +235,15 @@ for key in $(echo "${!MONTH_FILES[@]}" | tr ' ' '\n' | sort); do
         continue
     fi
 
-    # Build recap summary. Preserve rows from an existing archive because a
-    # month can be compacted more than once.
+    # Build new archive files in the archive directory and replace the public
+    # files only after the ZIP passes verification. This prevents a failed ZIP
+    # command from leaving a recap that claims files were archived.
+    tmp_recap=$(mktemp "$ARCHIVE_DIR/.${key}.md.XXXXXX")
+    tmp_zip=$(mktemp "$ARCHIVE_DIR/.${key}.zip.XXXXXX")
+    rm -f "$tmp_zip"
+
+    # Preserve rows from an existing recap because a month can be compacted
+    # more than once.
     {
         echo "# Session Archive — $key"
         echo ""
@@ -242,7 +260,9 @@ for key in $(echo "${!MONTH_FILES[@]}" | tr ' ' '\n' | sort); do
             file_date="${file_date%.md}"
 
             # Accept the Italian and English session templates.
-            summary=$(awk '/^## (Lavoro svolto|Work done)$/{found=1; next} found && /^- .+/{gsub(/^- /,""); print; exit}' "$f" 2>/dev/null || echo "—")
+            summary=$(awk '/^## (Lavoro svolto|Work done)$/{found=1; next} found && /^- .+/{gsub(/^- /,""); print; exit}' "$f" 2>/dev/null || true)
+            summary="${summary:-—}"
+            summary="${summary//|/\\|}"
             # Truncate to 80 chars
             if [[ ${#summary} -gt 80 ]]; then
                 summary="${summary:0:77}..."
@@ -253,17 +273,25 @@ for key in $(echo "${!MONTH_FILES[@]}" | tr ' ' '\n' | sort); do
         echo ""
         echo "---"
         echo "Original files archived in: $(basename "$zip_file")"
-    } > "$recap_file"
+    } > "$tmp_recap"
 
-    # Create zip archive
-    (cd "$SESSIONS_DIR" && zip -q "$zip_file" -- "${files[@]##*/}")
+    # Start from the existing ZIP, if any, so incremental compaction keeps
+    # earlier source files as well.
+    if [[ -f "$zip_file" ]]; then
+        cp "$zip_file" "$tmp_zip"
+    fi
+
+    (cd "$SESSIONS_DIR" && zip -q "$tmp_zip" -- "${files[@]##*/}")
 
     # Verify the archive before touching original files.
-    if ! unzip -tqq "$zip_file"; then
+    if ! unzip -tqq "$tmp_zip"; then
         echo "ERROR: Archive verification failed; originals were left untouched."
-        rm -f "$zip_file"
+        rm -f "$tmp_recap" "$tmp_zip"
         exit 1
     fi
+
+    mv -f "$tmp_zip" "$zip_file"
+    mv -f "$tmp_recap" "$recap_file"
 
     if [[ "$DELETE_ORIGINALS" == "true" ]]; then
         rm -- "${files[@]}"

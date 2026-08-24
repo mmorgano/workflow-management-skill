@@ -150,6 +150,8 @@ Over time, daily session files accumulate. Compaction keeps the `sessions/` dire
 - For each group: a summary `.md` + a `.zip` of originals is created in `sessions/archive/`
 - Original files are moved to `sessions/archive/originals/` by default; they
   are deleted only with the explicit `--delete-originals` option
+- New archive files are verified before they replace an existing archive; if
+  ZIP creation or verification fails, original session files are left intact.
 
 ### How to trigger
 
