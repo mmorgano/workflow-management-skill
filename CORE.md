@@ -21,6 +21,30 @@ An adapter must instruct its agent to:
 - `conventions.md` contains the detailed workflow conventions.
 - `examples/basic-ai-context/` provides a minimal starting context.
 
+## Configuration and layout
+
+The runtime file is `<AI_CONTEXT_ROOT>/.workflow-config.json`. It controls
+whether sprints and compaction are active. The context contains `RECAP.md`,
+`LAST_SESSION.md`, `sessions/`, `tasks/`, `focus/`, `roadmap/`, and optional
+`sprints/` and `meetings/` directories.
+
+`RECAP.md` is the source of truth for open work. `tasks/INDEX.md` is the
+source of truth for task numbering. `LAST_SESSION.md` is only a compact pointer
+to the most recent session.
+
+## Required record shapes
+
+Session records contain: work done, decisions, blockers, active focus, next
+steps, and a timesheet. When sprints are enabled, they also contain the sprint
+identifier and period.
+
+Task records contain: goal, current state, impact analysis, an approved
+execution plan, success criteria, and references. The first plan step is a
+safety checkpoint.
+
+Sprint records contain: goal, tickets, technical priorities, blockers,
+decisions, and notes. Detailed optional conventions live in `conventions.md`.
+
 ## Adapter requirements
 
 Each supported agent must provide:
