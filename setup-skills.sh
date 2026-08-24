@@ -10,12 +10,14 @@
 #   2. Sprint mode (enabled/disabled, duration)
 #   3. Session compaction (retention days, grouping)
 #
-# Configuration is saved to: ~/.config/skill-workflow-management/config.json
+# The runtime configuration is saved to: <AI_CONTEXT_ROOT>/.workflow-config.json
+# A small user-local pointer is kept only so the compaction command can be run
+# without repeating the context path.
 
 set -euo pipefail
 
 CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/skill-workflow-management"
-CONFIG_FILE="$CONFIG_DIR/config.json"
+CONTEXT_POINTER_FILE="$CONFIG_DIR/context-path.json"
 
 # --- Helpers ---
 
@@ -54,9 +56,28 @@ if [[ "${1:-}" == "--path" && -n "${2:-}" ]]; then
         echo "ERROR: Path must be absolute (start with /). Got: $NEW_PATH"
         exit 1
     fi
-    mkdir -p "$CONFIG_DIR"
-    printf '{\n  "version": "1.1.0",\n  "ai_context_root": "%s"\n}\n' "$NEW_PATH" > "$CONFIG_FILE"
-    echo "✓ Configuration saved: $CONFIG_FILE"
+    mkdir -p "$NEW_PATH" "$CONFIG_DIR"
+    python3 - "$NEW_PATH/.workflow-config.json" "$NEW_PATH" <<'PY'
+import json
+import sys
+payload = {
+    "version": "1.1.0",
+    "ai_context_root": sys.argv[2],
+    "sprint": {"enabled": True, "duration_weeks": 2},
+    "compaction": {"enabled": True, "retention_days": 30, "group_by": "month"},
+}
+with open(sys.argv[1], "w", encoding="utf-8") as handle:
+    json.dump(payload, handle, indent=2)
+    handle.write("\n")
+PY
+    python3 - "$CONTEXT_POINTER_FILE" "$NEW_PATH" <<'PY'
+import json
+import sys
+with open(sys.argv[1], "w", encoding="utf-8") as handle:
+    json.dump({"ai_context_root": sys.argv[2]}, handle, indent=2)
+    handle.write("\n")
+PY
+    echo "✓ Configuration saved: $NEW_PATH/.workflow-config.json"
     exit 0
 fi
 
@@ -75,8 +96,14 @@ echo "This must be an absolute path to an existing (or new) directory."
 echo ""
 
 current_path=""
-if [[ -f "$CONFIG_FILE" ]]; then
-    current_path=$(python3 -c "import json; print(json.load(open('$CONFIG_FILE')).get('ai_context_root', ''))" 2>/dev/null || true)
+if [[ -f "$CONTEXT_POINTER_FILE" ]]; then
+    current_path=$(python3 - "$CONTEXT_POINTER_FILE" <<'PY' 2>/dev/null || true
+import json
+import sys
+with open(sys.argv[1], encoding="utf-8") as handle:
+    print(json.load(handle).get("ai_context_root", ""))
+PY
+)
 fi
 if [[ -n "$current_path" ]]; then
     echo "  Current: $current_path"
@@ -160,23 +187,31 @@ echo ""
 
 mkdir -p "$CONFIG_DIR"
 
-cat > "$CONFIG_FILE" <<EOF
-{
-  "version": "1.1.0",
-  "ai_context_root": "$CTX_ROOT",
-  "sprint": {
-    "enabled": $SPRINT_ENABLED,
-    "duration_weeks": $SPRINT_WEEKS
-  },
-  "compaction": {
-    "enabled": $COMPACT_ENABLED,
-    "retention_days": $COMPACT_RETENTION,
-    "group_by": "$COMPACT_GROUP"
-  }
-}
-EOF
+python3 - "$CTX_ROOT/.workflow-config.json" "$CTX_ROOT" "$SPRINT_ENABLED" "$SPRINT_WEEKS" "$COMPACT_ENABLED" "$COMPACT_RETENTION" "$COMPACT_GROUP" <<'PY'
+import json
+import sys
 
-echo "✓ Configuration saved: $CONFIG_FILE"
+path, root, sprint_enabled, sprint_weeks, compact_enabled, retention, group = sys.argv[1:]
+payload = {
+    "version": "1.1.0",
+    "ai_context_root": root,
+    "sprint": {"enabled": sprint_enabled == "true", "duration_weeks": int(sprint_weeks)},
+    "compaction": {"enabled": compact_enabled == "true", "retention_days": int(retention), "group_by": group},
+}
+with open(path, "w", encoding="utf-8") as handle:
+    json.dump(payload, handle, indent=2)
+    handle.write("\n")
+PY
+
+python3 - "$CONTEXT_POINTER_FILE" "$CTX_ROOT" <<'PY'
+import json
+import sys
+with open(sys.argv[1], "w", encoding="utf-8") as handle:
+    json.dump({"ai_context_root": sys.argv[2]}, handle, indent=2)
+    handle.write("\n")
+PY
+
+echo "✓ Configuration saved: $CTX_ROOT/.workflow-config.json"
 
 # --- Ensure directory structure ---
 

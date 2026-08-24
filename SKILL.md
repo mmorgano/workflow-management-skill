@@ -191,7 +191,8 @@ When `compaction.enabled = true`, the system archives session files older than `
 3. For each group, the system creates:
    - `sessions/archive/<key>.md` — summary table with date + one-liner per session
    - `sessions/archive/<key>.zip` — zip of the original `.md` files
-4. Original files are removed from `sessions/`
+4. Original files are moved to `sessions/archive/originals/` by default. They
+   are deleted only when the user explicitly chooses `--delete-originals`.
 
 ### Safety buffer
 

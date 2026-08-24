@@ -16,7 +16,7 @@
 set -euo pipefail
 
 CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/skill-workflow-management"
-GLOBAL_CONFIG_FILE="$CONFIG_DIR/config.json"
+CONTEXT_POINTER_FILE="$CONFIG_DIR/context-path.json"
 
 DRY_RUN=false
 DELETE_ORIGINALS=false
@@ -35,8 +35,14 @@ done
 
 # Resolve AI_CONTEXT_ROOT from the explicit argument or global configuration.
 if [[ -z "$CTX_ROOT" ]]; then
-    if [[ -f "$GLOBAL_CONFIG_FILE" ]]; then
-        CTX_ROOT=$(python3 -c "import json; print(json.load(open('$GLOBAL_CONFIG_FILE')).get('ai_context_root', ''))" 2>/dev/null || true)
+    if [[ -f "$CONTEXT_POINTER_FILE" ]]; then
+        CTX_ROOT=$(python3 - "$CONTEXT_POINTER_FILE" <<'PY' 2>/dev/null || true
+import json
+import sys
+with open(sys.argv[1], encoding="utf-8") as handle:
+    print(json.load(handle).get("ai_context_root", ""))
+PY
+)
     fi
 fi
 
@@ -45,25 +51,55 @@ if [[ -z "$CTX_ROOT" || ! -d "$CTX_ROOT" ]]; then
     exit 1
 fi
 
-CONFIG_FILE="$GLOBAL_CONFIG_FILE"
-if [[ -f "$CTX_ROOT/.workflow-config.json" ]]; then
-    CONFIG_FILE="$CTX_ROOT/.workflow-config.json"
-fi
+CONFIG_FILE="$CTX_ROOT/.workflow-config.json"
 SESSIONS_DIR="$CTX_ROOT/sessions"
 ARCHIVE_DIR="$SESSIONS_DIR/archive"
 
 # --- Read config ---
 
-if [[ -f "$CONFIG_FILE" ]]; then
-    COMPACT_ENABLED=$(python3 -c "import json; c=json.load(open('$CONFIG_FILE')); print(str(c.get('compaction',{}).get('enabled', False)).lower())" 2>/dev/null || echo "false")
-    RETENTION_DAYS=$(python3 -c "import json; c=json.load(open('$CONFIG_FILE')); print(c.get('compaction',{}).get('retention_days', 30))" 2>/dev/null || echo "30")
-    GROUP_BY=$(python3 -c "import json; c=json.load(open('$CONFIG_FILE')); print(c.get('compaction',{}).get('group_by', 'month'))" 2>/dev/null || echo "month")
-else
-    echo "WARNING: No config file found at $CONFIG_FILE. Using defaults."
-    COMPACT_ENABLED="true"
-    RETENTION_DAYS=30
-    GROUP_BY="month"
+if [[ ! -f "$CONFIG_FILE" ]]; then
+    echo "ERROR: Configuration not found: $CONFIG_FILE. Run setup-skills.sh first."
+    exit 1
 fi
+
+read_config() {
+    python3 - "$CONFIG_FILE" <<'PY'
+import json
+import sys
+
+with open(sys.argv[1], encoding="utf-8") as handle:
+    config = json.load(handle)
+
+compact = config.get("compaction", {})
+sprint = config.get("sprint", {})
+retention = compact.get("retention_days", 30)
+weeks = sprint.get("duration_weeks", 2)
+if type(retention) is not int or not 7 <= retention <= 365:
+    raise ValueError("compaction.retention_days must be an integer between 7 and 365")
+if type(weeks) is not int or not 1 <= weeks <= 6:
+    raise ValueError("sprint.duration_weeks must be an integer between 1 and 6")
+if compact.get("group_by", "month") not in ("month", "sprint"):
+    raise ValueError("compaction.group_by must be 'month' or 'sprint'")
+if type(compact.get("enabled", False)) is not bool or type(sprint.get("enabled", False)) is not bool:
+    raise ValueError("enabled values must be booleans")
+print(str(compact.get("enabled", False)).lower())
+print(retention)
+print(compact.get("group_by", "month"))
+print(str(sprint.get("enabled", False)).lower())
+print(weeks)
+PY
+}
+
+if ! config_output=$(read_config); then
+    echo "ERROR: Invalid configuration in $CONFIG_FILE."
+    exit 1
+fi
+mapfile -t config_values <<< "$config_output"
+COMPACT_ENABLED="${config_values[0]}"
+RETENTION_DAYS="${config_values[1]}"
+GROUP_BY="${config_values[2]}"
+SPRINT_ENABLED="${config_values[3]}"
+SPRINT_WEEKS="${config_values[4]}"
 
 if [[ "$COMPACT_ENABLED" != "true" ]]; then
     echo "Compaction is disabled in configuration. Nothing to do."
@@ -72,9 +108,6 @@ if [[ "$COMPACT_ENABLED" != "true" ]]; then
 fi
 
 # --- Read sprint config for buffer calculation ---
-
-SPRINT_ENABLED=$(python3 -c "import json; c=json.load(open('$CONFIG_FILE')); print(str(c.get('sprint',{}).get('enabled', False)).lower())" 2>/dev/null || echo "false")
-SPRINT_WEEKS=$(python3 -c "import json; c=json.load(open('$CONFIG_FILE')); print(c.get('sprint',{}).get('duration_weeks', 2))" 2>/dev/null || echo "2")
 
 # --- Calculate effective retention (safety buffer) ---
 # With sprints: protect at least current + previous sprint (2 × duration)
@@ -85,16 +118,21 @@ MIN_FLOOR=25  # absolute minimum regardless of config
 
 if [[ "$SPRINT_ENABLED" == "true" ]]; then
     SPRINT_BUFFER=$(( SPRINT_WEEKS * 2 * 7 ))
-    EFFECTIVE_RETENTION=$(python3 -c "print(max($RETENTION_DAYS, $SPRINT_BUFFER, $MIN_FLOOR))")
+    EFFECTIVE_RETENTION=$(( RETENTION_DAYS > SPRINT_BUFFER ? (RETENTION_DAYS > MIN_FLOOR ? RETENTION_DAYS : MIN_FLOOR) : (SPRINT_BUFFER > MIN_FLOOR ? SPRINT_BUFFER : MIN_FLOOR) ))
 else
-    EFFECTIVE_RETENTION=$(python3 -c "print(max($RETENTION_DAYS, $MIN_FLOOR))")
+    EFFECTIVE_RETENTION=$(( RETENTION_DAYS > MIN_FLOOR ? RETENTION_DAYS : MIN_FLOOR ))
 fi
 
 # --- Identify files to archive ---
 
 mkdir -p "$ARCHIVE_DIR"
 
-CUTOFF_DATE=$(python3 -c "from datetime import datetime, timedelta; print((datetime.now() - timedelta(days=$EFFECTIVE_RETENTION)).strftime('%Y-%m-%d'))")
+CUTOFF_DATE=$(python3 - "$EFFECTIVE_RETENTION" <<'PY'
+from datetime import datetime, timedelta
+import sys
+print((datetime.now() - timedelta(days=int(sys.argv[1]))).strftime('%Y-%m-%d'))
+PY
+)
 echo "Compaction settings:"
 echo "  Configured retention: ${RETENTION_DAYS} days"
 if [[ "$SPRINT_ENABLED" == "true" ]]; then
@@ -121,6 +159,15 @@ for f in "$SESSIONS_DIR"/SESSION_*.md; do
 
     # Validate date format
     if [[ ! "$file_date" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
+        continue
+    fi
+    if ! python3 - "$file_date" <<'PY' >/dev/null 2>&1
+from datetime import date
+import sys
+date.fromisoformat(sys.argv[1])
+PY
+    then
+        echo "WARNING: Skipping session with invalid date: $basename" >&2
         continue
     fi
 
@@ -177,20 +224,25 @@ for key in $(echo "${!MONTH_FILES[@]}" | tr ' ' '\n' | sort); do
         continue
     fi
 
-    # Build recap summary
+    # Build recap summary. Preserve rows from an existing archive because a
+    # month can be compacted more than once.
     {
         echo "# Session Archive — $key"
         echo ""
         echo "| Date | Summary |"
         echo "|------|---------|"
 
+        if [[ -f "$recap_file" ]]; then
+            awk '/^\| [0-9][0-9][0-9][0-9]-/ { print }' "$recap_file"
+        fi
+
         for f in "${files[@]}"; do
             basename=$(basename "$f")
             file_date="${basename#SESSION_}"
             file_date="${file_date%.md}"
 
-            # Extract first non-empty bullet from "Lavoro svolto"
-            summary=$(awk '/^## Lavoro svolto/{found=1; next} found && /^- .+/{gsub(/^- /,""); print; exit}' "$f" 2>/dev/null || echo "—")
+            # Accept the Italian and English session templates.
+            summary=$(awk '/^## (Lavoro svolto|Work done)$/{found=1; next} found && /^- .+/{gsub(/^- /,""); print; exit}' "$f" 2>/dev/null || echo "—")
             # Truncate to 80 chars
             if [[ ${#summary} -gt 80 ]]; then
                 summary="${summary:0:77}..."

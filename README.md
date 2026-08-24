@@ -25,6 +25,10 @@ The result: no context lost between sessions, full audit trail of decisions, and
 - Basic familiarity with bash terminal
 - `python3` available (for config file parsing in compaction script)
 - `zip` available (for session archival)
+- `unzip` available (to verify archives before originals are touched)
+
+The supplied scripts target Bash on Linux/macOS. On Windows, run them from a
+compatible Unix environment such as WSL, Git Bash, or a container.
 
 ## Setup
 
@@ -41,7 +45,7 @@ The wizard will ask you:
 2. **Sprint management** — enable/disable, and if enabled: duration in weeks
 3. **Session compaction** — enable/disable, retention period, grouping method
 
-Configuration is saved to `<AI_CONTEXT_ROOT>/.workflow-config.json` and used by Kiro at session start.
+Configuration is saved to `<AI_CONTEXT_ROOT>/.workflow-config.json` and used by Kiro at session start. The wizard also stores only a local pointer to that context so the compaction command can be invoked without an explicit path.
 
 ### Non-interactive (path only, backward compatible)
 
@@ -144,7 +148,8 @@ Over time, daily session files accumulate. Compaction keeps the `sessions/` dire
 
 - Session files **older than retention_days** are grouped (by month or sprint)
 - For each group: a summary `.md` + a `.zip` of originals is created in `sessions/archive/`
-- Original files are removed
+- Original files are moved to `sessions/archive/originals/` by default; they
+  are deleted only with the explicit `--delete-originals` option
 
 ### How to trigger
 
@@ -173,7 +178,8 @@ sessions/
     ├── 2026-06.md             # Summary table for June 2026
     ├── 2026-06.zip            # Original June session files
     ├── 2026-07.md             # Summary table for July 2026
-    └── 2026-07.zip            # Original July session files
+    ├── 2026-07.zip            # Original July session files
+    └── originals/              # Recoverable source files, by archive group
 ```
 
 ## Verifying it works
@@ -277,6 +283,12 @@ ai-context/
 3. Done — each user gets their own configuration
 
 Each user has their own session/task/RECAP files. The skill is shared, the data is personal.
+
+## Before publishing a fork
+
+- Run `tests/smoke-test.sh` in a Bash environment with Python, `zip`, and `unzip`.
+- Confirm no personal context directory or runtime configuration is committed.
+- Review Git author metadata: commit author names and email addresses are public with the history.
 
 ## License
 
