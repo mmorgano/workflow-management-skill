@@ -8,6 +8,7 @@ tasks, optional sprints, durable project context, and recoverable archives.
 - `CORE.md` — shared workflow contract and data model
 - `SKILL.md` — Kiro adapter, retained for existing installations
 - `adapters/codex/` — initial Codex adapter, pending in-app validation
+- `adapters/claude-code/` — Claude Code adapter; its manual test has been run against a scratch context
 - `setup-skills.sh` — creates the context configuration and directory layout
 - `compact-sessions.sh` — safely archives old sessions
 - `conventions.md` — optional detailed team conventions
@@ -17,8 +18,9 @@ tasks, optional sprints, durable project context, and recoverable archives.
 
 | Agent | Status |
 |---|---|
-| Kiro | Supported via root `SKILL.md` |
-| Codex | Initial adapter; validate in an actual Codex session |
+| Kiro | Supported via root `SKILL.md`; pending in-app validation |
+| Codex | Initial adapter; pending in-app validation |
+| Claude Code | Supported via `adapters/claude-code/SKILL.md`; manual test steps run against a scratch context |
 | Other agents | Implement the contract in `CORE.md` |
 
 ## Requirements
