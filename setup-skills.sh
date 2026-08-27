@@ -48,6 +48,17 @@ ask_number() {
     done
 }
 
+ensure_layout() {
+    local root="$1"
+    mkdir -p "$root/sessions/archive"
+    mkdir -p "$root/sprints"
+    mkdir -p "$root/tasks/todo"
+    mkdir -p "$root/tasks/done"
+    mkdir -p "$root/focus"
+    mkdir -p "$root/roadmap"
+    mkdir -p "$root/meetings"
+}
+
 # --- Non-interactive mode ---
 
 if [[ "${1:-}" == "--path" && -n "${2:-}" ]]; then
@@ -78,6 +89,8 @@ with open(sys.argv[1], "w", encoding="utf-8") as handle:
     handle.write("\n")
 PY
     echo "✓ Configuration saved: $NEW_PATH/.workflow-config.json"
+    ensure_layout "$NEW_PATH"
+    echo "✓ Directory structure ensured"
     exit 0
 fi
 
@@ -215,13 +228,7 @@ echo "✓ Configuration saved: $CTX_ROOT/.workflow-config.json"
 
 # --- Ensure directory structure ---
 
-mkdir -p "$CTX_ROOT/sessions/archive"
-mkdir -p "$CTX_ROOT/sprints"
-mkdir -p "$CTX_ROOT/tasks/todo"
-mkdir -p "$CTX_ROOT/tasks/done"
-mkdir -p "$CTX_ROOT/focus"
-mkdir -p "$CTX_ROOT/roadmap"
-mkdir -p "$CTX_ROOT/meetings"
+ensure_layout "$CTX_ROOT"
 
 echo "✓ Directory structure ensured"
 echo ""
