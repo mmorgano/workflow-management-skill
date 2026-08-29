@@ -74,6 +74,25 @@ For non-interactive setup:
 The Bash setup requires Python 3. Session compaction additionally requires
 `zip` and `unzip`.
 
+### Recommended: add `ai-context` to the workspace
+
+Keep `ai-context` as a separate root in each multi-root workspace alongside
+the project you are working on. For example, the workspace can contain:
+
+```text
+my-project/             # project source
+ai-context/             # shared sessions, tasks, RECAP, and sprints
+```
+
+In VS Code, use **File > Add Folder to Workspace...**, select the configured
+`ai-context` directory (for example `C:\projects\ai-context`), then save the
+workspace file. Start Codex from that multi-root workspace.
+
+When a root named `ai-context` contains `.workflow-config.json`, the Codex
+adapter uses it before the user-local context pointer. This keeps the records
+visible in Explorer and avoids relying on access to a file under the user
+profile, which can be restricted by a workspace sandbox.
+
 ## Start the first session
 
 Open any workspace and ask:
