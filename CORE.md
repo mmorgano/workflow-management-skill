@@ -18,7 +18,8 @@ An adapter must instruct its agent to:
 4. Treat a missing `LAST_SESSION.md` as a normal first-session state. Create it
    only when a session is closed.
 5. Use `tasks/INDEX.md` as the source of truth for task numbers.
-6. Update session, RECAP, and sprint records as work changes.
+6. Update session, RECAP, sprint, focus, meeting, and roadmap records when
+   the work produces durable changes in their respective scope.
 7. Ask before destructive operations, external publication, or non-trivial
    execution plans.
 8. Offer session compaction; never run it without user confirmation.
@@ -93,6 +94,12 @@ safety checkpoint.
 
 Sprint records contain: goal, tickets, technical priorities, blockers,
 decisions, and notes. Detailed optional conventions live in `conventions.md`.
+
+Focus records hold the current analysis of one complex topic across multiple
+sessions or projects. Meeting records capture outcomes, decisions, owners, and
+follow-ups. Roadmap records hold long-horizon outcomes, milestones, sequencing,
+and dependencies beyond the active sprint. Create or update these records only
+when the user asks to manage that context or when a durable result requires it.
 
 At session close, update the session record first, create or update
 `LAST_SESSION.md` second, update `RECAP.md` third, and update sprint state when

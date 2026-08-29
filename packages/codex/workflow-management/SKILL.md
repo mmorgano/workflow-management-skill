@@ -1,13 +1,14 @@
 ---
 name: workflow-management
-description: Start, resume, or close structured work sessions and maintain durable session logs, RECAP, tasks, focus topics, and optional sprints. Use whenever the user asks to start, begin, resume, or close a work session, review current work, manage workflow tasks or sprints, or compact session records.
+description: Start, resume, or close structured work sessions and maintain durable session logs, RECAP, tasks, sprints, focus topics, meeting outcomes, and roadmaps. Use whenever the user asks to start, begin, resume, or close a work session; manage workflow tasks or sprints; track a complex topic; capture meeting decisions; review project direction; or compact session records.
 ---
 
 # Workflow Management for Codex
 
 Use this skill whenever the user asks to start, begin, resume, or close a work
 session; review the current work state; manage workflow tasks or sprints;
-update a RECAP; or compact old session records. A request to start a work
+update a RECAP; track a multi-session focus topic; record meeting outcomes;
+plan or revise a roadmap; or compact old session records. A request to start a work
 session must activate this workflow instead of becoming a general workspace
 analysis request.
 
@@ -61,6 +62,9 @@ At session close:
 - Treat the context directory as user data: inspect before changing it.
 - Create missing first-use records only after resolving a valid configured
   context.
+- Use `focus/` for complex multi-session topics, `meetings/` for durable
+  meeting outcomes, and `roadmap/` for long-horizon direction. Do not create
+  these records unless the request or resulting decision needs them.
 - Ask for confirmation before compaction, deletion, external publication, or
   non-trivial execution plans.
 - Prefer `compact-sessions.sh --dry-run` before a real compaction.

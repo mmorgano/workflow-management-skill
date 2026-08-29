@@ -1,12 +1,13 @@
 ---
 name: skill-workflow-management
-description: Structured sessions, tasks, optional sprints, recap tracking, and recoverable session archives.
+description: Structured sessions, tasks, sprints, focus topics, meeting outcomes, roadmaps, recap tracking, and recoverable session archives.
 ---
 
 # Workflow Management — Kiro Adapter
 
 Use this skill for session start/end, task or sprint work, project-status
-updates, workflow setup, and session compaction.
+updates, focus-topic tracking, meeting outcomes, roadmap planning, workflow
+setup, and session compaction.
 
 Read `CORE.md` before acting. Read `conventions.md` only when its detailed
 team conventions are relevant. The runtime configuration is
@@ -25,7 +26,8 @@ team conventions are relevant. The runtime configuration is
 ## During and after work
 
 - Record work, decisions, blockers, and next steps in the session.
-- Update RECAP and sprint status as soon as they change.
+- Update RECAP, sprint, focus, meeting, and roadmap records when their durable
+  state changes.
 - Before ending, update the session first, then `LAST_SESSION.md`, then RECAP.
 - Use `tasks/INDEX.md` before assigning a task number. Never reuse a number.
 - Request explicit approval before a non-trivial execution plan, destructive
@@ -44,6 +46,8 @@ explicit confirmation.
 - `LAST_SESSION.md` is a minimal pointer, not a diary.
 - Session files are daily records; task files are plans; focus files hold
   multi-session analysis.
+- Meeting files capture outcomes, owners, and follow-ups; roadmap files hold
+  long-horizon outcomes, milestones, and dependencies.
 - Keep current state at the top of a document and append history below it.
 
 ## Language and integrations

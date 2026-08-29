@@ -93,6 +93,27 @@ adapter uses it before the user-local context pointer. This keeps the records
 visible in Explorer and avoids relying on access to a file under the user
 profile, which can be restricted by a workspace sandbox.
 
+## `ai-context` layout
+
+`ai-context` is shared durable work context, not project source code. Keep it
+as one workspace root and use each area for a distinct kind of information:
+
+| Path | Purpose | Update when |
+|---|---|---|
+| `.workflow-config.json` | Runtime options and the context root. | Setup or configuration changes. |
+| `RECAP.md` | Compiled view of open work across projects. | Open work, blockers, or priorities change. |
+| `LAST_SESSION.md` | Short pointer to the last closed session. | A work session is closed. |
+| `sessions/` | Daily work log: work done, decisions, blockers, and next steps. | A session starts, reaches a checkpoint, or closes. |
+| `tasks/` | Numbered, execution-ready work items. `INDEX.md` owns numbering; `todo/` and `done/` reflect lifecycle. | Creating, progressing, or completing a task. |
+| `sprints/` | Time-boxed goals, tickets, decisions, and blockers. | Planning or updating the active sprint. |
+| `focus/` | A durable analysis for one complex topic that spans sessions or projects. | The user asks to track, resume, decide, or summarize that topic. |
+| `meetings/` | Concise records of meeting outcomes, decisions, owners, and follow-ups. | A meeting, review, or decision-making conversation produces durable outcomes. |
+| `roadmap/` | Long-horizon direction: outcomes, milestones, sequencing, and dependencies beyond one sprint. | Planning or revising future priorities and milestones. |
+
+The agent should not create a focus, meeting, or roadmap file merely because
+the directory exists. Create or update one when the request or the resulting
+decision needs durable context beyond the current task or session.
+
 ## Start the first session
 
 Open any workspace and ask:

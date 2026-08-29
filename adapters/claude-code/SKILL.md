@@ -1,13 +1,14 @@
 ---
 name: workflow-management
-description: Structured daily work sessions, tasks, optional sprints, RECAP tracking, and recoverable session archives for durable project context. Use when starting or closing a work session, creating or updating a task or sprint, checking open work / project status, or compacting old session records.
+description: Structured daily work sessions, tasks, sprints, focus topics, meeting outcomes, roadmaps, RECAP tracking, and recoverable session archives for durable project context. Use when starting or closing a work session, managing a task, sprint, focus topic, meeting outcome, or roadmap, checking project status, or compacting old session records.
 ---
 
 # Workflow Management for Claude Code
 
 Use this skill when the user asks to start or close a work session, manage
 tasks or sprints, update a RECAP, resume project context, or compact old
-session records.
+session records. Also use it to track a focus topic, capture durable meeting
+outcomes, or plan and review a roadmap.
 
 Read `CORE.md` and `conventions.md` in this skill package before changing the
 workflow context. Follow their shared contract exactly.

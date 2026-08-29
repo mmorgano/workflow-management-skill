@@ -124,6 +124,24 @@ there is no previous session. Create it when the first session is closed.
 - Session file always links active focus files
 - Structure: Context → Constraints → Approach → Sessions → Decisions → Open problems
 
+## Meeting Records (`meetings/MEETING_YYYY-MM-DD-<slug>.md`)
+
+- Create a record when a meeting, review, or decision-making conversation has
+  outcomes that must survive the current session.
+- Keep it concise: attendees or stakeholders, purpose, decisions, owners,
+  follow-ups, and links to affected tasks, focus files, or roadmap items.
+- Do not treat a chat transcript as a meeting record. Capture only durable
+  outcomes and unresolved follow-ups.
+
+## Roadmap Files (`roadmap/<slug>.md`)
+
+- Use roadmap files for outcomes, milestones, sequencing, and dependencies
+  that extend beyond the active sprint.
+- Keep the current direction at the top, followed by a dated decision/history
+  section. Link sprint tickets and focus files rather than duplicating them.
+- Update a roadmap when priorities, milestones, or dependencies change; do not
+  create one for a single task with no long-horizon implication.
+
 ## Compiled Truth Pattern
 
 Every technical document follows this principle:
