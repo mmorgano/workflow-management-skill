@@ -1,13 +1,15 @@
 ---
 name: workflow-management
-description: Start, resume, or close structured work sessions and maintain durable session logs, RECAP, tasks, focus topics, and optional sprints. Use whenever the user asks to start, begin, resume, or close a work session, review current work, manage workflow tasks or sprints, or compact session records.
+description: Start, resume, or close structured work sessions and maintain durable logs, RECAP, tasks, sprints, focus notes, meeting notes, and roadmaps. Use whenever the user asks to manage workflow tasks or sprints; take or resume notes, study a topic, or save an idea; capture a meeting or call; review project direction; or compact session records.
 ---
 
 # Workflow Management for Codex
 
 Use this skill whenever the user asks to start, begin, resume, or close a work
 session; review the current work state; manage workflow tasks or sprints;
-update a RECAP; or compact old session records. A request to start a work
+update a RECAP; take or resume focus notes; study a topic; save an idea;
+record a meeting or call; plan or revise a roadmap; or compact old session
+records. A request to start a work
 session must activate this workflow instead of becoming a general workspace
 analysis request.
 
@@ -35,32 +37,11 @@ Resolve `AI_CONTEXT_ROOT` in this order:
    the context root or ask them to run setup. Do not infer the shared context
    by broadly analyzing the workspace.
 
-## Session lifecycle
-
-At session start:
-
-1. Verify the current date with a system command.
-2. Read the configuration.
-3. Treat missing `RECAP.md`, `tasks/INDEX.md`, current sprint, and today's
-   session file as normal first-use state and create them according to
-   `CORE.md` and `conventions.md`. Never overwrite existing records.
-4. Treat a missing `LAST_SESSION.md` as “no previous session”; do not create it
-   yet.
-5. Read the initialized records and report the current sprint, open tasks,
-   blockers, and next steps.
-
-At session close:
-
-1. Finalize the session file.
-2. Create or update `LAST_SESSION.md`.
-3. Update `RECAP.md`.
-4. Update the sprint when relevant.
-
 ## Codex behavior
 
 - Treat the context directory as user data: inspect before changing it.
-- Create missing first-use records only after resolving a valid configured
-  context.
+- Follow the session lifecycle and record rules in `CORE.md` and
+  `conventions.md`; do not duplicate or replace them in this adapter.
 - Ask for confirmation before compaction, deletion, external publication, or
   non-trivial execution plans.
 - Prefer `compact-sessions.sh --dry-run` before a real compaction.

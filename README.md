@@ -7,9 +7,8 @@ tasks, optional sprints, durable project context, and recoverable archives.
 
 - `CORE.md` — shared workflow contract and data model
 - `SKILL.md` — Kiro adapter, retained for existing installations
-- `adapters/codex/` — Codex adapter source
 - `adapters/claude-code/` — Claude Code adapter; its manual test has been run against a scratch context
-- `packages/codex/workflow-management/` — self-contained Codex installation package
+- `packages/codex/workflow-management/` — canonical, self-contained Codex adapter and installation package
 - `setup-skills.sh` — creates the context configuration and directory layout
 - `setup-skills.ps1` — native Windows context setup
 - `compact-sessions.sh` — safely archives old sessions
@@ -57,6 +56,13 @@ From PowerShell in the cloned repository or installed package:
 
 This native setup has no Python or Bash dependency.
 
+Set the language of sessions, tasks, focus notes, meetings, roadmaps, and
+RECAP entries with `-RecordLanguage` (default: `English`):
+
+```powershell
+.\setup-skills.ps1 -ContextRoot C:\projects\ai-context -RecordLanguage English
+```
+
 ### Linux, macOS, Git Bash, or WSL
 
 Run the interactive wizard:
@@ -71,8 +77,21 @@ For non-interactive setup:
 ./setup-skills.sh --path /absolute/path/to/ai-context
 ```
 
+To set the record language in non-interactive Bash setup:
+
+```bash
+./setup-skills.sh --path /absolute/path/to/ai-context --record-language English
+```
+
 The Bash setup requires Python 3. Session compaction additionally requires
 `zip` and `unzip`.
+
+Existing contexts without `record_language` retain the backward-compatible
+default of English. README files, code, and commit messages remain English.
+
+New session files include a language-neutral internal marker used by
+compaction; visible headings and content still use the configured language.
+Existing Italian and English sessions remain compatible.
 
 ### Recommended: add `ai-context` to the workspace
 
@@ -92,6 +111,44 @@ When a root named `ai-context` contains `.workflow-config.json`, the Codex
 adapter uses it before the user-local context pointer. This keeps the records
 visible in Explorer and avoids relying on access to a file under the user
 profile, which can be restricted by a workspace sandbox.
+
+One `ai-context` can serve several projects: add the same context root to each
+project workspace when you want shared tasks, notes, meetings, and direction.
+Use a separate `ai-context` root for a project when its history or information
+must stay independent. A workspace should include only the context intended
+for that project session, so the agent never has to guess which records to
+update.
+
+## `ai-context` layout
+
+`ai-context` is shared durable work context, not project source code. Keep it
+as one workspace root and use each area for a distinct kind of information:
+
+| Path | Purpose | Update when |
+|---|---|---|
+| `.workflow-config.json` | Runtime options and the context root. | Setup or configuration changes. |
+| `RECAP.md` | Compiled view of open work across projects. | Open work, blockers, or priorities change. |
+| `LAST_SESSION.md` | Short pointer to the last closed session. | A work session is closed. |
+| `sessions/` | Daily work log: work done, decisions, blockers, and next steps. | A session starts, reaches a checkpoint, or closes. |
+| `tasks/` | Numbered, execution-ready work items. `INDEX.md` owns numbering; `todo/` and `done/` reflect lifecycle. | Creating, progressing, or completing a task. |
+| `sprints/` | Time-boxed goals, tickets, decisions, and blockers. | Planning or updating the active sprint. |
+| `focus/` | AI-assisted notebook for a topic: study notes, evolving analysis, project ideas, and cross-session reminders. | The user asks to take notes, study, explore, save an idea, or resume a topic. |
+| `meetings/` | Concise records of meetings, calls, reviews, outcomes, decisions, owners, and follow-ups. | The user asks to capture or summarize a meeting or call, or a conversation produces durable outcomes. |
+| `roadmap/` | Central project direction: outcomes, milestones, sequencing, and dependencies beyond one sprint. | The user asks to create, review, or update a roadmap, priorities, milestones, or future direction. |
+
+The agent should not create a focus, meeting, or roadmap file merely because
+the directory exists. Create or update one when the request or the resulting
+decision needs durable context beyond the current task or session.
+
+### Trigger examples
+
+Use natural language; no command syntax or fixed template is required.
+
+| Intent | Example requests | Expected record |
+|---|---|---|
+| Focus | “Take notes on PostgreSQL time-series.” “Let’s study this topic.” “Save this idea for the project.” “Resume my notes on …” | Create or update `focus/<slug>.md`; derive a clear title and filename from the topic. |
+| Meeting | “Capture the notes from this call.” “Summarize the meeting and save decisions.” “Record these follow-ups.” | Create or update `meetings/MEETING_YYYY-MM-DD-<slug>.md`. |
+| Roadmap | “Show the project roadmap.” “Add this milestone.” “Reprioritize the next quarter.” | Create or update an appropriate `roadmap/<slug>.md` file. |
 
 ## Start the first session
 

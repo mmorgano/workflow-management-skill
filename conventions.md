@@ -4,7 +4,7 @@
 
 - One file per working day, centralized (no per-domain copies)
 - Contains ALL work of the day: code, decisions, reasoning, problems
-- Written in **Italian** (code/commands in English)
+- Written in the configured `record_language` (code/commands in English)
 - At session start: verify if file exists, create if missing
 - Updated during session via checkpoints
 - Saved at session end
@@ -35,6 +35,8 @@ missing records without overwriting anything that already exists:
 4. Create `sessions/SESSION_YYYY-MM-DD.md` with sections for work done,
    decisions, blockers, active focus, next steps, and a timesheet. Include the
    sprint identifier and period when sprints are enabled.
+   Place `<!-- workflow:work-done -->` immediately before the work-done bullet
+   list so compaction can summarize a record in any language.
 
 Do not create `LAST_SESSION.md` during first-session startup. Its absence means
 there is no previous session. Create it when the first session is closed.
@@ -119,10 +121,34 @@ there is no previous session. Create it when the first session is closed.
 
 ## Focus Files (`focus/<slug>.md`)
 
-- One file per complex topic spanning multiple sessions
-- Updated each session that works on the topic
-- Session file always links active focus files
-- Structure: Context → Constraints → Approach → Sessions → Decisions → Open problems
+- An AI-assisted notebook for a study topic, evolving analysis, project idea,
+  or reminder that benefits from durable context.
+- Create or update one when the user asks to take notes, study, explore, save
+  an idea, or resume a topic. Derive a concise title and `<slug>` when none is
+  provided; no fixed template is required.
+- Keep the useful current understanding near the top, and use sections that
+  fit the topic, such as notes, sources, questions, ideas, decisions, or next
+  steps.
+- Link it from a session file when it is actively worked on during that
+  session.
+
+## Meeting Records (`meetings/MEETING_YYYY-MM-DD-<slug>.md`)
+
+- Create a record when a meeting, call, review, or decision-making
+  conversation has outcomes that must survive the current session.
+- Keep it concise: attendees or stakeholders, purpose, decisions, owners,
+  follow-ups, and links to affected tasks, focus files, or roadmap items.
+- Do not treat a chat transcript as a meeting record. Capture only durable
+  outcomes and unresolved follow-ups.
+
+## Roadmap Files (`roadmap/<slug>.md`)
+
+- Use roadmap files as the central project direction for outcomes, milestones,
+  sequencing, and dependencies that extend beyond the active sprint.
+- Keep the current direction at the top, followed by a dated decision/history
+  section. Link sprint tickets and focus files rather than duplicating them.
+- Update a roadmap when priorities, milestones, or dependencies change; do not
+  create one for a single task with no long-horizon implication.
 
 ## Compiled Truth Pattern
 
@@ -134,11 +160,16 @@ Every technical document follows this principle:
 
 | Context | Language |
 |---------|----------|
-| Chat, sessions, RECAP, focus, tasks | Italian |
+| Sessions, RECAP, focus, tasks, meetings, roadmaps | `record_language` in `.workflow-config.json` (default: English) |
 | Code, comments, docstrings | English |
 | Official docs (README, docs/) | English |
 | Commit messages, issue trackers | English |
 | Issue-tracker comments | English, using the format supported by the tracker |
+
+Read `record_language` before creating or updating a human-authored context
+record. Existing contexts without this field use English. The compaction marker
+`<!-- workflow:work-done -->` is language-neutral; existing Italian and English
+session headings remain supported for backward compatibility.
 
 ## Mandatory Behavioral Rules
 

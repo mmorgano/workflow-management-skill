@@ -22,6 +22,11 @@ function Assert-Condition {
 }
 
 try {
+    $packageRoot = Join-Path $repositoryRoot 'packages\codex\workflow-management'
+    @('CORE.md', 'SKILL.md', 'setup-skills.ps1', 'setup-skills.sh', 'compact-sessions.sh') | ForEach-Object {
+        Assert-Condition (Test-Path -LiteralPath (Join-Path $packageRoot $_) -PathType Leaf) "Missing package file: $_"
+    }
+
     $env:XDG_CONFIG_HOME = $testConfigRoot
     & (Join-Path $repositoryRoot 'setup-skills.ps1') -ContextRoot $contextRoot
 
@@ -37,6 +42,7 @@ try {
     Assert-Condition ([System.IO.Path]::GetFullPath([string]$pointer.ai_context_root) -eq $resolvedContext) 'Pointer root is incorrect.'
     Assert-Condition ([bool]$configuration.sprint.enabled) 'Sprints should be enabled by default.'
     Assert-Condition ([bool]$configuration.compaction.enabled) 'Compaction should be enabled by default.'
+    Assert-Condition ([string]$configuration.record_language -eq 'English') 'Record language should default to English.'
 
     @(
         'sessions\archive', 'sprints', 'tasks\todo', 'tasks\done',
@@ -56,6 +62,10 @@ try {
         $secondRunFailed = $true
     }
     Assert-Condition $secondRunFailed 'Setup replaced an existing configuration without -Force.'
+
+    & (Join-Path $repositoryRoot 'setup-skills.ps1') -ContextRoot $contextRoot -RecordLanguage Italian -Force
+    $updatedConfiguration = Get-Content -Raw -LiteralPath $configurationFile | ConvertFrom-Json
+    Assert-Condition ([string]$updatedConfiguration.record_language -eq 'Italian') 'Setup did not persist the configured record language.'
 
     Write-Output 'PowerShell smoke tests passed'
 } finally {

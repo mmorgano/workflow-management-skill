@@ -12,6 +12,9 @@ param(
     [ValidateSet('month', 'sprint')]
     [string]$GroupBy = 'month',
 
+    [ValidateNotNullOrEmpty()]
+    [string]$RecordLanguage = 'English',
+
     [switch]$DisableSprints,
     [switch]$DisableCompaction,
     [switch]$Force
@@ -77,8 +80,9 @@ foreach ($directory in $directories) {
 }
 
 $configuration = [ordered]@{
-    version = '1.1.0'
+    version = '1.2.0'
     ai_context_root = $resolvedRoot
+    record_language = $RecordLanguage
     sprint = [ordered]@{
         enabled = -not $DisableSprints.IsPresent
         duration_weeks = $SprintWeeks

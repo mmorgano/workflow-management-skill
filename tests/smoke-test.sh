@@ -12,7 +12,7 @@ bash -n "$ROOT/compact-sessions.sh"
 
 # Non-interactive setup must create the portable runtime configuration.
 SETUP_CONTEXT="$TMP/setup context's"
-XDG_CONFIG_HOME="$TMP/setup-config" "$ROOT/setup-skills.sh" --path "$SETUP_CONTEXT"
+XDG_CONFIG_HOME="$TMP/setup-config" "$ROOT/setup-skills.sh" --path "$SETUP_CONTEXT" --record-language English
 python3 - "$SETUP_CONTEXT/.workflow-config.json" <<'PY'
 import json
 import sys
@@ -20,6 +20,7 @@ with open(sys.argv[1], encoding="utf-8") as handle:
     config = json.load(handle)
 assert config["ai_context_root"].endswith("setup context's")
 assert config["compaction"]["enabled"] is True
+assert config["record_language"] == "English"
 PY
 
 # Setup creates configuration and directories, while the agent creates
@@ -30,11 +31,11 @@ test ! -e "$SETUP_CONTEXT/tasks/INDEX.md"
 
 # The installable Codex package must stay synchronized and expose one skill.
 PACKAGE="$ROOT/packages/codex/workflow-management"
-cmp "$ROOT/adapters/codex/SKILL.md" "$PACKAGE/SKILL.md"
 for file in CORE.md conventions.md setup-skills.sh setup-skills.ps1 compact-sessions.sh; do
     cmp "$ROOT/$file" "$PACKAGE/$file"
 done
 test "$(find "$PACKAGE" -name SKILL.md -type f | wc -l)" -eq 1
+test ! -e "$ROOT/adapters/codex/SKILL.md"
 
 mkdir -p "$TMP/context/sessions" "$TMP/skill-workflow-management"
 cat > "$TMP/context/.workflow-config.json" <<EOF
@@ -46,7 +47,8 @@ EOF
 cat > "$TMP/context/sessions/SESSION_${OLD_DATE}.md" <<EOF
 ## Current sprint
 - **Sprint ID**: $OLD_DATE
-## Work done
+## Travail effectué
+<!-- workflow:work-done -->
 - Test
 EOF
 
