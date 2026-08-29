@@ -11,3 +11,8 @@ LAST_SESSION.md
 !examples/
 !examples/**/
 !examples/**
+
+# Keep the self-contained Codex package examples in version control.
+!packages/
+!packages/**/
+!packages/codex/workflow-management/examples/**
