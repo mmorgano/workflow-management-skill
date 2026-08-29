@@ -4,7 +4,7 @@
 
 - One file per working day, centralized (no per-domain copies)
 - Contains ALL work of the day: code, decisions, reasoning, problems
-- Written in **Italian** (code/commands in English)
+- Written in the configured `record_language` (code/commands in English)
 - At session start: verify if file exists, create if missing
 - Updated during session via checkpoints
 - Saved at session end
@@ -35,6 +35,8 @@ missing records without overwriting anything that already exists:
 4. Create `sessions/SESSION_YYYY-MM-DD.md` with sections for work done,
    decisions, blockers, active focus, next steps, and a timesheet. Include the
    sprint identifier and period when sprints are enabled.
+   Place `<!-- workflow:work-done -->` immediately before the work-done bullet
+   list so compaction can summarize a record in any language.
 
 Do not create `LAST_SESSION.md` during first-session startup. Its absence means
 there is no previous session. Create it when the first session is closed.
@@ -158,14 +160,16 @@ Every technical document follows this principle:
 
 | Context | Language |
 |---------|----------|
-| Sessions, RECAP, focus, tasks, meetings, roadmaps | `record_language` in `.workflow-config.json` (default: Italian) |
+| Sessions, RECAP, focus, tasks, meetings, roadmaps | `record_language` in `.workflow-config.json` (default: English) |
 | Code, comments, docstrings | English |
 | Official docs (README, docs/) | English |
 | Commit messages, issue trackers | English |
 | Issue-tracker comments | English, using the format supported by the tracker |
 
 Read `record_language` before creating or updating a human-authored context
-record. Existing contexts without this field continue to use Italian.
+record. Existing contexts without this field use English. The compaction marker
+`<!-- workflow:work-done -->` is language-neutral; existing Italian and English
+session headings remain supported for backward compatibility.
 
 ## Mandatory Behavioral Rules
 

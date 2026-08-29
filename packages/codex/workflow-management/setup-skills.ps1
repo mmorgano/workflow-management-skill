@@ -13,7 +13,7 @@ param(
     [string]$GroupBy = 'month',
 
     [ValidateNotNullOrEmpty()]
-    [string]$RecordLanguage = 'Italian',
+    [string]$RecordLanguage = 'English',
 
     [switch]$DisableSprints,
     [switch]$DisableCompaction,

@@ -259,8 +259,12 @@ for key in $(echo "${!MONTH_FILES[@]}" | tr ' ' '\n' | sort); do
             file_date="${basename#SESSION_}"
             file_date="${file_date%.md}"
 
-            # Accept the Italian and English session templates.
-            summary=$(awk '/^## (Lavoro svolto|Work done)$/{found=1; next} found && /^- .+/{gsub(/^- /,""); print; exit}' "$f" 2>/dev/null || true)
+            # The marker makes new records language-independent. Keep the
+            # Italian and English headings as a fallback for existing records.
+            summary=$(awk '/^<!-- workflow:work-done -->$/{found=1; next} found && /^- .+/{gsub(/^- /,""); print; exit}' "$f" 2>/dev/null || true)
+            if [[ -z "$summary" ]]; then
+                summary=$(awk '/^## (Lavoro svolto|Work done)$/{found=1; next} found && /^- .+/{gsub(/^- /,""); print; exit}' "$f" 2>/dev/null || true)
+            fi
             summary="${summary:-—}"
             summary="${summary//|/\\|}"
             # Truncate to 80 chars

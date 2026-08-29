@@ -13,7 +13,7 @@ An adapter must instruct its agent to:
    Do not substitute general workspace analysis for workflow initialization.
 2. Read `<AI_CONTEXT_ROOT>/.workflow-config.json` before assuming that sprints
    or compaction are enabled, and use `record_language` for human-authored
-   context records. Treat a missing `record_language` as `Italian` for
+   context records. Treat a missing `record_language` as `English` for
    backward compatibility.
 3. At session start, initialize missing first-use records in a configured
    context, then read the recap, previous-session pointer, and current sprint.
@@ -39,7 +39,7 @@ An adapter must instruct its agent to:
 The runtime file is `<AI_CONTEXT_ROOT>/.workflow-config.json`. It controls
 whether sprints and compaction are active and sets `record_language` for
 sessions, tasks, focus notes, meetings, roadmaps, and RECAP entries. The
-default is `Italian`; code, README files, and commit messages remain English.
+default is `English`; code, README files, and commit messages remain English.
 
 The setup scripts also write a user-local pointer named
 `skill-workflow-management/context-path.json` under the platform configuration
@@ -91,6 +91,12 @@ agent lifecycle.
 Session records contain: work done, decisions, blockers, active focus, next
 steps, and a timesheet. When sprints are enabled, they also contain the sprint
 identifier and period.
+
+The visible headings and text of a session use `record_language`. Before the
+work-done bullet list, include the language-neutral marker
+`<!-- workflow:work-done -->` so compaction can summarize records in any
+language. Existing Italian and English records without the marker remain
+supported.
 
 Task records contain: goal, current state, impact analysis, an approved
 execution plan, success criteria, and references. The first plan step is a

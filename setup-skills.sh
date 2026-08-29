@@ -3,7 +3,7 @@
 #
 # Usage:
 #   ./setup-skills.sh                      # Interactive wizard
-#   ./setup-skills.sh --path /abs/path [--record-language Italian]
+#   ./setup-skills.sh --path /abs/path [--record-language English]
 #
 # The wizard configures:
 #   1. AI_CONTEXT_ROOT path
@@ -64,7 +64,7 @@ ensure_layout() {
 
 if [[ "${1:-}" == "--path" && -n "${2:-}" ]]; then
     NEW_PATH="$2"
-    RECORD_LANGUAGE="Italian"
+    RECORD_LANGUAGE="English"
     if [[ "${3:-}" == "--record-language" && -n "${4:-}" ]]; then
         RECORD_LANGUAGE="$4"
     elif [[ $# -gt 2 ]]; then
@@ -210,8 +210,8 @@ echo "─── Step 4/4: Record Language ───"
 echo ""
 echo "Choose the language used for sessions, tasks, focus notes, meetings,"
 echo "roadmaps, and RECAP entries. Code, README files, and commit messages remain English."
-read -p "Record language [Italian]: " RECORD_LANGUAGE
-RECORD_LANGUAGE="${RECORD_LANGUAGE:-Italian}"
+read -p "Record language [English]: " RECORD_LANGUAGE
+RECORD_LANGUAGE="${RECORD_LANGUAGE:-English}"
 
 echo ""
 

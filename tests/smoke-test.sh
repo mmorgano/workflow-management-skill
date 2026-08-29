@@ -47,7 +47,8 @@ EOF
 cat > "$TMP/context/sessions/SESSION_${OLD_DATE}.md" <<EOF
 ## Current sprint
 - **Sprint ID**: $OLD_DATE
-## Work done
+## Travail effectué
+<!-- workflow:work-done -->
 - Test
 EOF
 
