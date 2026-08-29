@@ -7,7 +7,8 @@ Agent adapters supply only installation details and agent-specific activation la
 
 An adapter must instruct its agent to:
 
-1. Resolve `<AI_CONTEXT_ROOT>` from an explicit user path, the user-local
+1. Resolve `<AI_CONTEXT_ROOT>` from an explicit user path, a workspace root
+   named `ai-context` that contains `.workflow-config.json`, the user-local
    context pointer, or a `.workflow-config.json` in the current workspace.
    Do not substitute general workspace analysis for workflow initialization.
 2. Read `<AI_CONTEXT_ROOT>/.workflow-config.json` before assuming that sprints
@@ -43,7 +44,14 @@ systems it is normally
 `${XDG_CONFIG_HOME:-$HOME/.config}/skill-workflow-management/context-path.json`.
 An explicit path always takes precedence over the pointer.
 
-If neither an explicit path, a valid pointer, nor a workspace configuration is
+When `ai-context` is added as a separate root in a multi-root workspace, its
+own `.workflow-config.json` is a workspace-local, sandbox-friendly source of
+truth. Prefer this root before reading the user-local pointer. Do not select a
+directory merely because its name resembles a context root: verify that the
+configuration file exists and resolves to that directory.
+
+If neither an explicit path, a valid `ai-context` workspace root, a valid
+pointer, nor a workspace configuration is
 available, the agent must ask for the context root. It must not silently treat
 an arbitrary workspace as the shared context.
 

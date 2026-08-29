@@ -22,6 +22,14 @@ function Assert-Condition {
 }
 
 try {
+    $packageRoot = Join-Path $repositoryRoot 'packages\codex\workflow-management'
+    @('CORE.md', 'SKILL.md', 'setup-skills.ps1', 'setup-skills.sh', 'setup-skills.bat', 'compact-sessions.sh') | ForEach-Object {
+        Assert-Condition (Test-Path -LiteralPath (Join-Path $packageRoot $_) -PathType Leaf) "Missing package file: $_"
+    }
+    $rootBatchHash = (Get-FileHash -Algorithm SHA256 -LiteralPath (Join-Path $repositoryRoot 'setup-skills.bat')).Hash
+    $packageBatchHash = (Get-FileHash -Algorithm SHA256 -LiteralPath (Join-Path $packageRoot 'setup-skills.bat')).Hash
+    Assert-Condition ($rootBatchHash -eq $packageBatchHash) 'The package batch launcher is not synchronized.'
+
     $env:XDG_CONFIG_HOME = $testConfigRoot
     & (Join-Path $repositoryRoot 'setup-skills.ps1') -ContextRoot $contextRoot
 
