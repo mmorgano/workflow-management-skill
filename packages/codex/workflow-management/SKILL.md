@@ -1,14 +1,15 @@
 ---
 name: workflow-management
-description: Start, resume, or close structured work sessions and maintain durable session logs, RECAP, tasks, sprints, focus topics, meeting outcomes, and roadmaps. Use whenever the user asks to start, begin, resume, or close a work session; manage workflow tasks or sprints; track a complex topic; capture meeting decisions; review project direction; or compact session records.
+description: Start, resume, or close structured work sessions and maintain durable logs, RECAP, tasks, sprints, focus notes, meeting notes, and roadmaps. Use whenever the user asks to manage workflow tasks or sprints; take or resume notes, study a topic, or save an idea; capture a meeting or call; review project direction; or compact session records.
 ---
 
 # Workflow Management for Codex
 
 Use this skill whenever the user asks to start, begin, resume, or close a work
 session; review the current work state; manage workflow tasks or sprints;
-update a RECAP; track a multi-session focus topic; record meeting outcomes;
-plan or revise a roadmap; or compact old session records. A request to start a work
+update a RECAP; take or resume focus notes; study a topic; save an idea;
+record a meeting or call; plan or revise a roadmap; or compact old session
+records. A request to start a work
 session must activate this workflow instead of becoming a general workspace
 analysis request.
 

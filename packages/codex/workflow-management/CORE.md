@@ -95,11 +95,15 @@ safety checkpoint.
 Sprint records contain: goal, tickets, technical priorities, blockers,
 decisions, and notes. Detailed optional conventions live in `conventions.md`.
 
-Focus records hold the current analysis of one complex topic across multiple
-sessions or projects. Meeting records capture outcomes, decisions, owners, and
-follow-ups. Roadmap records hold long-horizon outcomes, milestones, sequencing,
-and dependencies beyond the active sprint. Create or update these records only
-when the user asks to manage that context or when a durable result requires it.
+Focus records are AI-assisted notebooks for study notes, evolving analysis,
+project ideas, and reminders across sessions or projects. Meeting records
+capture meetings, calls, outcomes, decisions, owners, and follow-ups. Roadmap
+records hold central project direction, long-horizon outcomes, milestones,
+sequencing, and dependencies beyond the active sprint. Create or update these
+records when the user asks to take notes, study, explore, save or resume an
+idea; capture meeting or call outcomes; or create, review, or update project
+direction, priorities, or milestones. Derive a clear title and filename from
+the topic when the user does not provide one.
 
 At session close, update the session record first, create or update
 `LAST_SESSION.md` second, update `RECAP.md` third, and update sprint state when

@@ -119,15 +119,21 @@ there is no previous session. Create it when the first session is closed.
 
 ## Focus Files (`focus/<slug>.md`)
 
-- One file per complex topic spanning multiple sessions
-- Updated each session that works on the topic
-- Session file always links active focus files
-- Structure: Context → Constraints → Approach → Sessions → Decisions → Open problems
+- An AI-assisted notebook for a study topic, evolving analysis, project idea,
+  or reminder that benefits from durable context.
+- Create or update one when the user asks to take notes, study, explore, save
+  an idea, or resume a topic. Derive a concise title and `<slug>` when none is
+  provided; no fixed template is required.
+- Keep the useful current understanding near the top, and use sections that
+  fit the topic, such as notes, sources, questions, ideas, decisions, or next
+  steps.
+- Link it from a session file when it is actively worked on during that
+  session.
 
 ## Meeting Records (`meetings/MEETING_YYYY-MM-DD-<slug>.md`)
 
-- Create a record when a meeting, review, or decision-making conversation has
-  outcomes that must survive the current session.
+- Create a record when a meeting, call, review, or decision-making
+  conversation has outcomes that must survive the current session.
 - Keep it concise: attendees or stakeholders, purpose, decisions, owners,
   follow-ups, and links to affected tasks, focus files, or roadmap items.
 - Do not treat a chat transcript as a meeting record. Capture only durable
@@ -135,8 +141,8 @@ there is no previous session. Create it when the first session is closed.
 
 ## Roadmap Files (`roadmap/<slug>.md`)
 
-- Use roadmap files for outcomes, milestones, sequencing, and dependencies
-  that extend beyond the active sprint.
+- Use roadmap files as the central project direction for outcomes, milestones,
+  sequencing, and dependencies that extend beyond the active sprint.
 - Keep the current direction at the top, followed by a dated decision/history
   section. Link sprint tickets and focus files rather than duplicating them.
 - Update a roadmap when priorities, milestones, or dependencies change; do not
