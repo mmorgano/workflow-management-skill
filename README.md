@@ -12,7 +12,6 @@ tasks, optional sprints, durable project context, and recoverable archives.
 - `packages/codex/workflow-management/` — self-contained Codex installation package
 - `setup-skills.sh` — creates the context configuration and directory layout
 - `setup-skills.ps1` — native Windows context setup
-- `setup-skills.bat` — optional Git Bash compatibility launcher for Windows
 - `compact-sessions.sh` — safely archives old sessions
 - `conventions.md` — optional detailed team conventions
 - `examples/basic-ai-context/` — minimal starter context
@@ -57,16 +56,6 @@ From PowerShell in the cloned repository or installed package:
 ```
 
 This native setup has no Python or Bash dependency.
-
-If you specifically need to use the Bash setup from Command Prompt,
-PowerShell, or File Explorer, use the optional compatibility launcher:
-
-```bat
-setup-skills.bat --path C:\projects\ai-context
-```
-
-It requires Git for Windows and a `python3` executable available from Git
-Bash. Prefer `setup-skills.ps1` for new Windows installations.
 
 ### Linux, macOS, Git Bash, or WSL
 
