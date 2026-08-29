@@ -42,6 +42,7 @@ try {
     Assert-Condition ([System.IO.Path]::GetFullPath([string]$pointer.ai_context_root) -eq $resolvedContext) 'Pointer root is incorrect.'
     Assert-Condition ([bool]$configuration.sprint.enabled) 'Sprints should be enabled by default.'
     Assert-Condition ([bool]$configuration.compaction.enabled) 'Compaction should be enabled by default.'
+    Assert-Condition ([string]$configuration.record_language -eq 'Italian') 'Record language should default to Italian.'
 
     @(
         'sessions\archive', 'sprints', 'tasks\todo', 'tasks\done',
@@ -61,6 +62,10 @@ try {
         $secondRunFailed = $true
     }
     Assert-Condition $secondRunFailed 'Setup replaced an existing configuration without -Force.'
+
+    & (Join-Path $repositoryRoot 'setup-skills.ps1') -ContextRoot $contextRoot -RecordLanguage English -Force
+    $updatedConfiguration = Get-Content -Raw -LiteralPath $configurationFile | ConvertFrom-Json
+    Assert-Condition ([string]$updatedConfiguration.record_language -eq 'English') 'Setup did not persist the configured record language.'
 
     Write-Output 'PowerShell smoke tests passed'
 } finally {

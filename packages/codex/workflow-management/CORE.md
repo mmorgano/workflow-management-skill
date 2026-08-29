@@ -12,7 +12,9 @@ An adapter must instruct its agent to:
    context pointer, or a `.workflow-config.json` in the current workspace.
    Do not substitute general workspace analysis for workflow initialization.
 2. Read `<AI_CONTEXT_ROOT>/.workflow-config.json` before assuming that sprints
-   or compaction are enabled.
+   or compaction are enabled, and use `record_language` for human-authored
+   context records. Treat a missing `record_language` as `Italian` for
+   backward compatibility.
 3. At session start, initialize missing first-use records in a configured
    context, then read the recap, previous-session pointer, and current sprint.
 4. Treat a missing `LAST_SESSION.md` as a normal first-session state. Create it
@@ -35,7 +37,9 @@ An adapter must instruct its agent to:
 ## Configuration and layout
 
 The runtime file is `<AI_CONTEXT_ROOT>/.workflow-config.json`. It controls
-whether sprints and compaction are active.
+whether sprints and compaction are active and sets `record_language` for
+sessions, tasks, focus notes, meetings, roadmaps, and RECAP entries. The
+default is `Italian`; code, README files, and commit messages remain English.
 
 The setup scripts also write a user-local pointer named
 `skill-workflow-management/context-path.json` under the platform configuration

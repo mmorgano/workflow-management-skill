@@ -56,6 +56,13 @@ From PowerShell in the cloned repository or installed package:
 
 This native setup has no Python or Bash dependency.
 
+Set the language of sessions, tasks, focus notes, meetings, roadmaps, and
+RECAP entries with `-RecordLanguage` (default: `Italian`):
+
+```powershell
+.\setup-skills.ps1 -ContextRoot C:\projects\ai-context -RecordLanguage English
+```
+
 ### Linux, macOS, Git Bash, or WSL
 
 Run the interactive wizard:
@@ -70,8 +77,17 @@ For non-interactive setup:
 ./setup-skills.sh --path /absolute/path/to/ai-context
 ```
 
+To set the record language in non-interactive Bash setup:
+
+```bash
+./setup-skills.sh --path /absolute/path/to/ai-context --record-language English
+```
+
 The Bash setup requires Python 3. Session compaction additionally requires
 `zip` and `unzip`.
+
+Existing contexts without `record_language` retain the backward-compatible
+default of Italian. README files, code, and commit messages remain English.
 
 ### Recommended: add `ai-context` to the workspace
 

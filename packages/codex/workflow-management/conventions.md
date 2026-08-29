@@ -158,11 +158,14 @@ Every technical document follows this principle:
 
 | Context | Language |
 |---------|----------|
-| Chat, sessions, RECAP, focus, tasks | Italian |
+| Sessions, RECAP, focus, tasks, meetings, roadmaps | `record_language` in `.workflow-config.json` (default: Italian) |
 | Code, comments, docstrings | English |
 | Official docs (README, docs/) | English |
 | Commit messages, issue trackers | English |
 | Issue-tracker comments | English, using the format supported by the tracker |
+
+Read `record_language` before creating or updating a human-authored context
+record. Existing contexts without this field continue to use Italian.
 
 ## Mandatory Behavioral Rules
 

@@ -3,12 +3,13 @@
 #
 # Usage:
 #   ./setup-skills.sh                      # Interactive wizard
-#   ./setup-skills.sh --path /abs/path     # Non-interactive: set path only
+#   ./setup-skills.sh --path /abs/path [--record-language Italian]
 #
 # The wizard configures:
 #   1. AI_CONTEXT_ROOT path
 #   2. Sprint mode (enabled/disabled, duration)
 #   3. Session compaction (retention days, grouping)
+#   4. Language for human-authored context records
 #
 # The runtime configuration is saved to: <AI_CONTEXT_ROOT>/.workflow-config.json
 # A small user-local pointer is kept only so the compaction command can be run
@@ -63,17 +64,25 @@ ensure_layout() {
 
 if [[ "${1:-}" == "--path" && -n "${2:-}" ]]; then
     NEW_PATH="$2"
+    RECORD_LANGUAGE="Italian"
+    if [[ "${3:-}" == "--record-language" && -n "${4:-}" ]]; then
+        RECORD_LANGUAGE="$4"
+    elif [[ $# -gt 2 ]]; then
+        echo "ERROR: Use --path /absolute/path [--record-language Language]."
+        exit 1
+    fi
     if [[ "$NEW_PATH" != /* ]]; then
         echo "ERROR: Path must be absolute (start with /). Got: $NEW_PATH"
         exit 1
     fi
     mkdir -p "$NEW_PATH" "$CONFIG_DIR"
-    python3 - "$NEW_PATH/.workflow-config.json" "$NEW_PATH" <<'PY'
+    python3 - "$NEW_PATH/.workflow-config.json" "$NEW_PATH" "$RECORD_LANGUAGE" <<'PY'
 import json
 import sys
 payload = {
-    "version": "1.1.0",
+    "version": "1.2.0",
     "ai_context_root": sys.argv[2],
+    "record_language": sys.argv[3],
     "sprint": {"enabled": True, "duration_weeks": 2},
     "compaction": {"enabled": True, "retention_days": 30, "group_by": "month"},
 }
@@ -102,7 +111,7 @@ echo "╚═══════════════════════�
 echo ""
 
 # Step 1: AI_CONTEXT_ROOT
-echo "─── Step 1/3: AI Context Root ───"
+echo "─── Step 1/4: AI Context Root ───"
 echo ""
 echo "Where should session files, tasks, and sprint data be stored?"
 echo "This must be an absolute path to an existing (or new) directory."
@@ -143,7 +152,7 @@ fi
 echo ""
 
 # Step 2: Sprint configuration
-echo "─── Step 2/3: Sprint Management ───"
+echo "─── Step 2/4: Sprint Management ───"
 echo ""
 echo "Sprints are optional time-boxed planning cycles."
 echo "If disabled, session files won't reference sprints."
@@ -163,7 +172,7 @@ fi
 echo ""
 
 # Step 3: Session compaction
-echo "─── Step 3/3: Session Compaction ───"
+echo "─── Step 3/4: Session Compaction ───"
 echo ""
 echo "Over time, daily session files accumulate. Compaction archives"
 echo "older files into monthly summaries + zip, keeping recent files intact."
@@ -196,18 +205,29 @@ fi
 
 echo ""
 
+# Step 4: Record language
+echo "─── Step 4/4: Record Language ───"
+echo ""
+echo "Choose the language used for sessions, tasks, focus notes, meetings,"
+echo "roadmaps, and RECAP entries. Code, README files, and commit messages remain English."
+read -p "Record language [Italian]: " RECORD_LANGUAGE
+RECORD_LANGUAGE="${RECORD_LANGUAGE:-Italian}"
+
+echo ""
+
 # --- Write config ---
 
 mkdir -p "$CONFIG_DIR"
 
-python3 - "$CTX_ROOT/.workflow-config.json" "$CTX_ROOT" "$SPRINT_ENABLED" "$SPRINT_WEEKS" "$COMPACT_ENABLED" "$COMPACT_RETENTION" "$COMPACT_GROUP" <<'PY'
+python3 - "$CTX_ROOT/.workflow-config.json" "$CTX_ROOT" "$SPRINT_ENABLED" "$SPRINT_WEEKS" "$COMPACT_ENABLED" "$COMPACT_RETENTION" "$COMPACT_GROUP" "$RECORD_LANGUAGE" <<'PY'
 import json
 import sys
 
-path, root, sprint_enabled, sprint_weeks, compact_enabled, retention, group = sys.argv[1:]
+path, root, sprint_enabled, sprint_weeks, compact_enabled, retention, group, record_language = sys.argv[1:]
 payload = {
-    "version": "1.1.0",
+    "version": "1.2.0",
     "ai_context_root": root,
+    "record_language": record_language,
     "sprint": {"enabled": sprint_enabled == "true", "duration_weeks": int(sprint_weeks)},
     "compaction": {"enabled": compact_enabled == "true", "retention_days": int(retention), "group_by": group},
 }
@@ -236,6 +256,7 @@ echo "════════════════════════�
 echo "  Setup complete! Configuration summary:"
 echo ""
 echo "  Root:       $CTX_ROOT"
+echo "  Records:    $RECORD_LANGUAGE"
 echo "  Sprints:    $( [[ $SPRINT_ENABLED == true ]] && echo "enabled (${SPRINT_WEEKS}w)" || echo "disabled" )"
 echo "  Compaction: $( [[ $COMPACT_ENABLED == true ]] && echo "enabled (retain ${COMPACT_RETENTION}d, by ${COMPACT_GROUP})" || echo "disabled" )"
 echo "════════════════════════════════════════════"

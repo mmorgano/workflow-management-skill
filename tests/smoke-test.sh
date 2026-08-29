@@ -12,7 +12,7 @@ bash -n "$ROOT/compact-sessions.sh"
 
 # Non-interactive setup must create the portable runtime configuration.
 SETUP_CONTEXT="$TMP/setup context's"
-XDG_CONFIG_HOME="$TMP/setup-config" "$ROOT/setup-skills.sh" --path "$SETUP_CONTEXT"
+XDG_CONFIG_HOME="$TMP/setup-config" "$ROOT/setup-skills.sh" --path "$SETUP_CONTEXT" --record-language English
 python3 - "$SETUP_CONTEXT/.workflow-config.json" <<'PY'
 import json
 import sys
@@ -20,6 +20,7 @@ with open(sys.argv[1], encoding="utf-8") as handle:
     config = json.load(handle)
 assert config["ai_context_root"].endswith("setup context's")
 assert config["compaction"]["enabled"] is True
+assert config["record_language"] == "English"
 PY
 
 # Setup creates configuration and directories, while the agent creates
