@@ -7,9 +7,8 @@ tasks, optional sprints, durable project context, and recoverable archives.
 
 - `CORE.md` — shared workflow contract and data model
 - `SKILL.md` — Kiro adapter, retained for existing installations
-- `adapters/codex/` — Codex adapter source
 - `adapters/claude-code/` — Claude Code adapter; its manual test has been run against a scratch context
-- `packages/codex/workflow-management/` — self-contained Codex installation package
+- `packages/codex/workflow-management/` — canonical, self-contained Codex adapter and installation package
 - `setup-skills.sh` — creates the context configuration and directory layout
 - `setup-skills.ps1` — native Windows context setup
 - `compact-sessions.sh` — safely archives old sessions

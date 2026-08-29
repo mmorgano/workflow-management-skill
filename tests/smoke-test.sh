@@ -30,11 +30,11 @@ test ! -e "$SETUP_CONTEXT/tasks/INDEX.md"
 
 # The installable Codex package must stay synchronized and expose one skill.
 PACKAGE="$ROOT/packages/codex/workflow-management"
-cmp "$ROOT/adapters/codex/SKILL.md" "$PACKAGE/SKILL.md"
 for file in CORE.md conventions.md setup-skills.sh setup-skills.ps1 compact-sessions.sh; do
     cmp "$ROOT/$file" "$PACKAGE/$file"
 done
 test "$(find "$PACKAGE" -name SKILL.md -type f | wc -l)" -eq 1
+test ! -e "$ROOT/adapters/codex/SKILL.md"
 
 mkdir -p "$TMP/context/sessions" "$TMP/skill-workflow-management"
 cat > "$TMP/context/.workflow-config.json" <<EOF

@@ -36,35 +36,11 @@ Resolve `AI_CONTEXT_ROOT` in this order:
    the context root or ask them to run setup. Do not infer the shared context
    by broadly analyzing the workspace.
 
-## Session lifecycle
-
-At session start:
-
-1. Verify the current date with a system command.
-2. Read the configuration.
-3. Treat missing `RECAP.md`, `tasks/INDEX.md`, current sprint, and today's
-   session file as normal first-use state and create them according to
-   `CORE.md` and `conventions.md`. Never overwrite existing records.
-4. Treat a missing `LAST_SESSION.md` as “no previous session”; do not create it
-   yet.
-5. Read the initialized records and report the current sprint, open tasks,
-   blockers, and next steps.
-
-At session close:
-
-1. Finalize the session file.
-2. Create or update `LAST_SESSION.md`.
-3. Update `RECAP.md`.
-4. Update the sprint when relevant.
-
 ## Codex behavior
 
 - Treat the context directory as user data: inspect before changing it.
-- Create missing first-use records only after resolving a valid configured
-  context.
-- Use `focus/` for complex multi-session topics, `meetings/` for durable
-  meeting outcomes, and `roadmap/` for long-horizon direction. Do not create
-  these records unless the request or resulting decision needs them.
+- Follow the session lifecycle and record rules in `CORE.md` and
+  `conventions.md`; do not duplicate or replace them in this adapter.
 - Ask for confirmation before compaction, deletion, external publication, or
   non-trivial execution plans.
 - Prefer `compact-sessions.sh --dry-run` before a real compaction.
