@@ -1,17 +1,18 @@
 ---
 name: workflow-management
-description: Structured daily work sessions, tasks, sprints, focus notes, meeting notes, roadmaps, RECAP tracking, and recoverable session archives for durable project context. Use when starting or closing a work session, managing a task or sprint, taking or resuming notes, studying a topic, saving an idea, capturing a meeting or call, reviewing project direction, or compacting old session records.
+description: Maintain durable, file-based work context across AI sessions, including session logs, RECAP, workflow tasks, sprints, saved notes, meeting outcomes, roadmaps, and archives. Use when the user asks to start or close a managed work session or to preserve, resume, or organize context beyond the current conversation. Do not use for ordinary coding or one-off questions with no request for durable records.
 ---
 
 # Workflow Management for Claude Code
 
-Use this skill when the user asks to start or close a work session, manage
-tasks or sprints, update a RECAP, resume project context, or compact old
-session records. Also use it to take or resume notes, study a topic, save an
-idea, capture durable meeting or call outcomes, or plan and review a roadmap.
+Use this skill only for durable workflow context: managed sessions, persistent
+tasks, saved or resumed notes, meeting outcomes, sprints, roadmaps, RECAP
+review, or session archives. Do not turn an ordinary coding request, one-off
+explanation, or transient to-do list into workflow records.
 
-Read `CORE.md` and `conventions.md` in this skill package before changing the
-workflow context. Follow their shared contract exactly.
+Before changing the workflow context, read `CORE.md` and `conventions.md`, then
+load only the relevant file under `references/`: `sessions.md`, `tasks.md`,
+`planning-and-notes.md`, or `compaction.md`.
 
 ## Install
 
@@ -24,16 +25,16 @@ and the folder name must match the `name` field above (`workflow-management`).
 - **Project** (checked into the repo, shared with the team): same layout
   under `<project>/.claude/skills/workflow-management/`.
 
-Either way, `CORE.md`, `conventions.md`, `setup-skills.sh`, and
+Either way, `CORE.md`, `conventions.md`, `references/`, `setup-skills.sh`, and
 `compact-sessions.sh` must sit alongside the installed `SKILL.md` — the
-adapter refers to them as siblings, not by absolute path.
+adapter refers to them by relative path.
 
 ## Configuration
 
 The runtime configuration is `<AI_CONTEXT_ROOT>/.workflow-config.json`. The
-user can initialize it with `setup-skills.sh`; on Windows this requires WSL or
-Git Bash with Python 3, `zip`, and `unzip` available in that shell (see the
-repository README for details).
+user can initialize it with `setup-skills.sh`; on Windows, use the native
+`setup-skills.ps1`. Session compaction remains Bash-based and requires Python
+3, `zip`, and `unzip` in WSL or Git Bash (see the repository README).
 
 ## Claude Code behavior
 
@@ -61,10 +62,11 @@ repository README for details).
 Before relying on this adapter, confirm it end-to-end against a scratch
 context directory (not a real `AI_CONTEXT_ROOT`):
 
-1. Run `setup-skills.sh --path <scratch-dir>` to create a throwaway
+1. Run `setup-skills.sh --path <scratch-dir>` or, on Windows,
+   `setup-skills.ps1 -ContextRoot <scratch-dir>` to create a throwaway
    configuration and directory layout.
 2. Ask Claude Code to start a session. Confirm it reads the config, `RECAP.md`,
-   `LAST_SESSION.md`, and the sprint file when enabled, then creates
+   `LAST_SESSION.md` when present, and the sprint file when enabled, then creates
    `sessions/SESSION_<today>.md` and summarizes open tasks/blockers/next steps.
 3. Ask it to create a task. Confirm it reads `tasks/INDEX.md` for the next
    number, writes `tasks/todo/NN-slug.md`, and updates the index.

@@ -23,9 +23,30 @@ function Assert-Condition {
 
 try {
     $packageRoot = Join-Path $repositoryRoot 'packages\codex\workflow-management'
-    @('CORE.md', 'SKILL.md', 'setup-skills.ps1', 'setup-skills.sh', 'compact-sessions.sh') | ForEach-Object {
+    @(
+        'CORE.md', 'SKILL.md', 'conventions.md', 'setup-skills.ps1',
+        'setup-skills.sh', 'compact-sessions.sh', 'agents\openai.yaml',
+        'references\sessions.md', 'references\tasks.md',
+        'references\planning-and-notes.md', 'references\compaction.md'
+    ) | ForEach-Object {
         Assert-Condition (Test-Path -LiteralPath (Join-Path $packageRoot $_) -PathType Leaf) "Missing package file: $_"
     }
+
+    @(
+        'CORE.md', 'conventions.md', 'setup-skills.ps1', 'setup-skills.sh',
+        'compact-sessions.sh', 'references\sessions.md',
+        'references\tasks.md', 'references\planning-and-notes.md',
+        'references\compaction.md'
+    ) | ForEach-Object {
+        $rootContent = Get-Content -Raw -LiteralPath (Join-Path $repositoryRoot $_)
+        $packageContent = Get-Content -Raw -LiteralPath (Join-Path $packageRoot $_)
+        Assert-Condition ($rootContent -ceq $packageContent) "Package file differs from root: $_"
+    }
+
+    Assert-Condition (-not (Test-Path -LiteralPath (Join-Path $repositoryRoot 'examples\basic-ai-context\LAST_SESSION.md'))) 'Root starter contains LAST_SESSION.md.'
+    Assert-Condition (-not (Test-Path -LiteralPath (Join-Path $packageRoot 'examples\basic-ai-context\LAST_SESSION.md'))) 'Package starter contains LAST_SESSION.md.'
+    $openAiMetadata = Get-Content -Raw -LiteralPath (Join-Path $packageRoot 'agents\openai.yaml')
+    Assert-Condition ($openAiMetadata.Contains('$workflow-management')) 'Default prompt does not reference $workflow-management.'
 
     $env:XDG_CONFIG_HOME = $testConfigRoot
     & (Join-Path $repositoryRoot 'setup-skills.ps1') -ContextRoot $contextRoot

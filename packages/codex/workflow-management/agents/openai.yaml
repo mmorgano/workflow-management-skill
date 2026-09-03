@@ -1,0 +1,4 @@
+interface:
+  display_name: "Workflow Management"
+  short_description: "Keep durable work context across AI sessions"
+  default_prompt: "Use $workflow-management to start a managed work session and restore my open context."
