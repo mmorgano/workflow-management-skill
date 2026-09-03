@@ -1,7 +1,45 @@
 # workflow-management-skill
 
-A portable workflow-management core for AI coding agents: daily sessions,
-tasks, optional sprints, durable project context, and recoverable archives.
+Durable, human-readable project memory for AI coding agents.
+
+## Why this exists
+
+AI coding agents work well inside a single conversation, but project context
+often becomes fragmented across sessions, repositories, and tools. Decisions,
+blockers, unfinished tasks, and next steps are easily lost, forcing each new
+session to reconstruct the state of the work.
+
+`workflow-management` gives the agent a small, persistent workspace made of
+plain Markdown and JSON:
+
+- daily session logs preserve what happened and why;
+- `RECAP.md` provides a current view of open work;
+- numbered task files keep plans and progress traceable;
+- optional sprints connect daily work to short-term goals;
+- focus notes, meeting records, and roadmaps preserve knowledge that should
+  survive the current conversation;
+- recoverable compaction keeps a long-running context manageable.
+
+The result is faster session restarts, fewer repeated explanations, clearer
+handoffs, and a workflow history that remains readable and editable by humans.
+The files stay under your control and can be shared across supported agents.
+
+This is most useful for long-running work, projects that span several AI
+conversations, or teams that need decisions and next steps to remain visible.
+For a one-off task that needs no durable context, it may be unnecessary.
+
+## Typical workflow
+
+1. Ask the agent to start a work session.
+2. The agent restores open tasks, blockers, and previous next steps.
+3. Work normally; durable decisions and progress are recorded as needed.
+4. Close the session to leave a concise handoff for the next conversation.
+
+No special command syntax is required. For example:
+
+```text
+Let's start a new work session.
+```
 
 ## What is included
 
@@ -19,9 +57,9 @@ tasks, optional sprints, durable project context, and recoverable archives.
 
 | Agent | Status |
 |---|---|
-| Kiro | Supported via root `SKILL.md`; pending in-app validation |
-| Codex | Supported via the self-contained package; Windows manual test documented |
-| Claude Code | Supported via `adapters/claude-code/SKILL.md`; manual test steps run against a scratch context |
+| Kiro | Compatibility adapter retained in the root `SKILL.md`; in-app validation pending |
+| Codex | Supported via the self-contained package; manual acceptance test documented |
+| Claude Code | Supported via `adapters/claude-code/SKILL.md`; manually tested against a scratch context |
 | Other agents | Implement the contract in `CORE.md` |
 
 ## Install for Codex
@@ -68,19 +106,19 @@ RECAP entries with `-RecordLanguage` (default: `English`):
 Run the interactive wizard:
 
 ```bash
-./setup-skills.sh
+bash ./setup-skills.sh
 ```
 
 For non-interactive setup:
 
 ```bash
-./setup-skills.sh --path /absolute/path/to/ai-context
+bash ./setup-skills.sh --path /absolute/path/to/ai-context
 ```
 
 To set the record language in non-interactive Bash setup:
 
 ```bash
-./setup-skills.sh --path /absolute/path/to/ai-context --record-language English
+bash ./setup-skills.sh --path /absolute/path/to/ai-context --record-language English
 ```
 
 The Bash setup requires Python 3. Session compaction additionally requires
@@ -140,6 +178,25 @@ The agent should not create a focus, meeting, or roadmap file merely because
 the directory exists. Create or update one when the request or the resulting
 decision needs durable context beyond the current task or session.
 
+## Data ownership and safety
+
+The workflow stores its state as ordinary Markdown and JSON under the context
+root you choose. No external storage service is required, and the records can
+be inspected, edited, backed up, or versioned with normal file tools.
+
+Setup creates the configuration, directory structure, and context pointer. It
+does not create or overwrite operational Markdown records such as `RECAP.md`
+or `LAST_SESSION.md`; those are created by the session lifecycle when needed.
+
+Compaction runs only when explicitly requested. The recommended first step is
+a dry run, and real compaction verifies the ZIP archive before moving original
+session files into a recoverable archive directory. Permanent deletion
+requires the explicit `--delete-originals` option.
+
+This skill complements source control and issue trackers; it does not replace
+them. Its purpose is to preserve the working context that commonly falls
+between commits, tickets, and individual AI conversations.
+
 ### Trigger examples
 
 Use natural language; no command syntax or fixed template is required.
@@ -169,6 +226,9 @@ session is closed.
 - Python 3
 - `zip` and `unzip`
 
+Windows setup is native PowerShell, but compaction is currently Bash-based and
+must be run through Git Bash or WSL.
+
 ## Daily use
 
 Ask the active agent to start or close a session, create a task, show the
@@ -176,7 +236,7 @@ RECAP, plan a sprint, or compact sessions. The agent follows `CORE.md` and its
 adapter instructions. Review compaction first with:
 
 ```bash
-./compact-sessions.sh --dry-run
+bash ./compact-sessions.sh --dry-run
 ```
 
 ## Verification
