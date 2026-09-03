@@ -43,14 +43,16 @@ Let's start a new work session.
 
 ## What is included
 
-- `CORE.md` — shared workflow contract and data model
+- `CORE.md` — shared workflow contract and context-resolution rules
 - `SKILL.md` — Kiro adapter, retained for existing installations
 - `adapters/claude-code/` — Claude Code adapter; its manual test has been run against a scratch context
 - `packages/codex/workflow-management/` — canonical, self-contained Codex adapter and installation package
+- `packages/codex/workflow-management/agents/openai.yaml` — Codex UI metadata and default prompt
+- `references/` — session, task, planning, and compaction rules loaded on demand
 - `setup-skills.sh` — creates the context configuration and directory layout
 - `setup-skills.ps1` — native Windows context setup
 - `compact-sessions.sh` — safely archives old sessions
-- `conventions.md` — optional detailed team conventions
+- `conventions.md` — portable defaults that defer to project-specific rules
 - `examples/basic-ai-context/` — minimal starter context
 
 ## Agent support
@@ -78,11 +80,20 @@ The installed folder contains exactly one `SKILL.md`. Codex can invoke it
 explicitly as `$workflow-management` or implicitly when the request matches its
 description. Restart Codex if a newly installed version does not appear.
 
+This repository currently distributes a standalone skill package for direct
+installation. Packaging it as a plugin is a separate future distribution step
+for publishing through the shared plugin directory; it is not required by the
+runtime workflow.
+
 ## Configure the context
 
 Setup creates the configuration, directory layout, and user-local context
 pointer. Operational Markdown records are intentionally created by the agent
 when the first session starts, not by setup.
+
+Setup refuses to replace an existing configuration or a pointer to a different
+context. Use `-Force` on PowerShell or `--force` on Bash only when you intend to
+reconfigure the context.
 
 ### Windows
 
@@ -99,6 +110,12 @@ RECAP entries with `-RecordLanguage` (default: `English`):
 
 ```powershell
 .\setup-skills.ps1 -ContextRoot C:\projects\ai-context -RecordLanguage English
+```
+
+To intentionally replace an existing configuration:
+
+```powershell
+.\setup-skills.ps1 -ContextRoot C:\projects\ai-context -Force
 ```
 
 ### Linux, macOS, Git Bash, or WSL
@@ -119,6 +136,12 @@ To set the record language in non-interactive Bash setup:
 
 ```bash
 bash ./setup-skills.sh --path /absolute/path/to/ai-context --record-language English
+```
+
+To intentionally replace an existing configuration:
+
+```bash
+bash ./setup-skills.sh --path /absolute/path/to/ai-context --force
 ```
 
 The Bash setup requires Python 3. Session compaction additionally requires
@@ -170,7 +193,7 @@ as one workspace root and use each area for a distinct kind of information:
 | `sessions/` | Daily work log: work done, decisions, blockers, and next steps. | A session starts, reaches a checkpoint, or closes. |
 | `tasks/` | Numbered, execution-ready work items. `INDEX.md` owns numbering; `todo/` and `done/` reflect lifecycle. | Creating, progressing, or completing a task. |
 | `sprints/` | Time-boxed goals, tickets, decisions, and blockers. | Planning or updating the active sprint. |
-| `focus/` | AI-assisted notebook for a topic: study notes, evolving analysis, project ideas, and cross-session reminders. | The user asks to take notes, study, explore, save an idea, or resume a topic. |
+| `focus/` | AI-assisted notebook for a topic: study notes, evolving analysis, project ideas, and cross-session reminders. | The user asks to preserve or resume study notes, analysis, an idea, or another topic across sessions. |
 | `meetings/` | Concise records of meetings, calls, reviews, outcomes, decisions, owners, and follow-ups. | The user asks to capture or summarize a meeting or call, or a conversation produces durable outcomes. |
 | `roadmap/` | Central project direction: outcomes, milestones, sequencing, and dependencies beyond one sprint. | The user asks to create, review, or update a roadmap, priorities, milestones, or future direction. |
 
@@ -203,7 +226,7 @@ Use natural language; no command syntax or fixed template is required.
 
 | Intent | Example requests | Expected record |
 |---|---|---|
-| Focus | “Take notes on PostgreSQL time-series.” “Let’s study this topic.” “Save this idea for the project.” “Resume my notes on …” | Create or update `focus/<slug>.md`; derive a clear title and filename from the topic. |
+| Focus | “Keep durable notes on PostgreSQL time-series.” “Save this idea for the project.” “Resume my notes on …” | Create or update `focus/<slug>.md`; derive a clear title and filename from the topic. |
 | Meeting | “Capture the notes from this call.” “Summarize the meeting and save decisions.” “Record these follow-ups.” | Create or update `meetings/MEETING_YYYY-MM-DD-<slug>.md`. |
 | Roadmap | “Show the project roadmap.” “Add this milestone.” “Reprioritize the next quarter.” | Create or update an appropriate `roadmap/<slug>.md` file. |
 
@@ -228,6 +251,13 @@ session is closed.
 
 Windows setup is native PowerShell, but compaction is currently Bash-based and
 must be run through Git Bash or WSL.
+
+The configured retention is a minimum. Compaction always preserves at least 25
+recent days and, when sprints are enabled, the current and previous sprint:
+
+```text
+effective retention = max(configured days, 25, 2 × sprint duration in days)
+```
 
 ## Daily use
 
@@ -255,7 +285,9 @@ On Windows, also run:
 
 The tests cover portable and native Windows setup, package consistency,
 recoverable compaction, incremental archives, and invalid configuration
-handling. Follow `tests/CODEX_ACCEPTANCE.md` for the manual invocation test.
+handling. GitHub Actions runs the Bash suite on Linux and macOS and the
+PowerShell suite on Windows. Follow `tests/CODEX_ACCEPTANCE.md` for the manual
+invocation test.
 
 ## Publishing a fork
 

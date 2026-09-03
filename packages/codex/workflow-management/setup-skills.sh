@@ -3,7 +3,7 @@
 #
 # Usage:
 #   ./setup-skills.sh                      # Interactive wizard
-#   ./setup-skills.sh --path /abs/path [--record-language English]
+#   ./setup-skills.sh --path /abs/path [--record-language English] [--force]
 #
 # The wizard configures:
 #   1. AI_CONTEXT_ROOT path
@@ -19,6 +19,11 @@ set -euo pipefail
 
 CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/skill-workflow-management"
 CONTEXT_POINTER_FILE="$CONFIG_DIR/context-path.json"
+
+if ! command -v python3 >/dev/null 2>&1; then
+    echo "ERROR: Required command not found: python3" >&2
+    exit 1
+fi
 
 # --- Helpers ---
 
@@ -60,21 +65,107 @@ ensure_layout() {
     mkdir -p "$root/meetings"
 }
 
+usage() {
+    cat <<'EOF'
+Usage:
+  ./setup-skills.sh
+  ./setup-skills.sh [--force]
+  ./setup-skills.sh --path /absolute/path [--record-language Language] [--force]
+
+By default, setup refuses to replace an existing context configuration or a
+pointer to a different context. Use --force only when reconfiguration is
+intentional.
+EOF
+}
+
+read_pointer_root() {
+    python3 - "$CONTEXT_POINTER_FILE" <<'PY' 2>/dev/null || true
+import json
+import sys
+with open(sys.argv[1], encoding="utf-8") as handle:
+    value = json.load(handle).get("ai_context_root", "")
+print(value if isinstance(value, str) else "")
+PY
+}
+
+ensure_config_write_allowed() {
+    local root="$1"
+    local config_file="$root/.workflow-config.json"
+    local existing_root=""
+
+    if [[ -f "$config_file" && "$FORCE" != "true" ]]; then
+        echo "ERROR: Configuration already exists: $config_file. Use --force to replace it." >&2
+        return 1
+    fi
+
+    if [[ -f "$CONTEXT_POINTER_FILE" ]]; then
+        existing_root=$(read_pointer_root)
+        if [[ -z "$existing_root" && "$FORCE" != "true" ]]; then
+            echo "ERROR: Context pointer is invalid: $CONTEXT_POINTER_FILE. Use --force to replace it." >&2
+            return 1
+        fi
+        if [[ -n "$existing_root" && "$existing_root" != "$root" && "$FORCE" != "true" ]]; then
+            echo "ERROR: Context pointer already targets $existing_root. Use --force to replace it." >&2
+            return 1
+        fi
+    fi
+}
+
+FORCE=false
+NEW_PATH=""
+RECORD_LANGUAGE_ARG=""
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --path)
+            if [[ $# -lt 2 ]]; then
+                echo "ERROR: --path requires an absolute path." >&2
+                exit 1
+            fi
+            if [[ "$2" == --* ]]; then
+                echo "ERROR: --path requires an absolute path." >&2
+                exit 1
+            fi
+            NEW_PATH="$2"
+            shift 2
+            ;;
+        --record-language)
+            if [[ $# -lt 2 ]]; then
+                echo "ERROR: --record-language requires a value." >&2
+                exit 1
+            fi
+            if [[ "$2" == --* ]]; then
+                echo "ERROR: --record-language requires a value." >&2
+                exit 1
+            fi
+            RECORD_LANGUAGE_ARG="$2"
+            shift 2
+            ;;
+        --force)
+            FORCE=true
+            shift
+            ;;
+        -h|--help)
+            usage
+            exit 0
+            ;;
+        *)
+            echo "ERROR: Unknown argument: $1" >&2
+            usage >&2
+            exit 1
+            ;;
+    esac
+done
+
 # --- Non-interactive mode ---
 
-if [[ "${1:-}" == "--path" && -n "${2:-}" ]]; then
-    NEW_PATH="$2"
-    RECORD_LANGUAGE="English"
-    if [[ "${3:-}" == "--record-language" && -n "${4:-}" ]]; then
-        RECORD_LANGUAGE="$4"
-    elif [[ $# -gt 2 ]]; then
-        echo "ERROR: Use --path /absolute/path [--record-language Language]."
-        exit 1
-    fi
+if [[ -n "$NEW_PATH" ]]; then
+    RECORD_LANGUAGE="${RECORD_LANGUAGE_ARG:-English}"
     if [[ "$NEW_PATH" != /* ]]; then
         echo "ERROR: Path must be absolute (start with /). Got: $NEW_PATH"
         exit 1
     fi
+    ensure_config_write_allowed "$NEW_PATH"
     mkdir -p "$NEW_PATH" "$CONFIG_DIR"
     python3 - "$NEW_PATH/.workflow-config.json" "$NEW_PATH" "$RECORD_LANGUAGE" <<'PY'
 import json
@@ -101,6 +192,11 @@ PY
     ensure_layout "$NEW_PATH"
     echo "✓ Directory structure ensured"
     exit 0
+fi
+
+if [[ -n "$RECORD_LANGUAGE_ARG" ]]; then
+    echo "ERROR: --record-language requires --path in non-interactive mode." >&2
+    exit 1
 fi
 
 # --- Interactive wizard ---
@@ -148,6 +244,8 @@ if [[ ! -d "$CTX_ROOT" ]]; then
         exit 1
     fi
 fi
+
+ensure_config_write_allowed "$CTX_ROOT"
 
 echo ""
 

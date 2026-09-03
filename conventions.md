@@ -1,208 +1,45 @@
-# Workflow Management — Full Conventions
+# Workflow Management Conventions
 
-## Session Rules (`sessions/SESSION_YYYY-MM-DD.md`)
+These are portable defaults for workflow records. Explicit user instructions,
+repository guidance, and platform policy take precedence. Do not impose a
+particular programming language, linter, branch model, merge strategy, or
+deployment process when the project has its own conventions.
 
-- One file per working day, centralized (no per-domain copies)
-- Contains ALL work of the day: code, decisions, reasoning, problems
-- Written in the configured `record_language` (code/commands in English)
-- At session start: verify if file exists, create if missing
-- Updated during session via checkpoints
-- Saved at session end
+## Record language
 
-### First-Use Initialization
+Sessions, RECAP entries, tasks, focus notes, meetings, and roadmaps use
+`record_language` from `.workflow-config.json`, defaulting to `English` when the
+field is absent. Code, project documentation, commits, and external tracker
+content follow the conventions of the project they belong to.
 
-A configured but empty context is valid. On the first session start, create
-missing records without overwriting anything that already exists:
+## Record-writing defaults
 
-1. Create `RECAP.md` with this minimal content:
-   ```markdown
-   # Recap — Open items
+- Keep the useful current state near the top.
+- Preserve dated history below it when a timeline materially helps.
+- Link related records instead of duplicating their full contents.
+- Record durable outcomes and unresolved follow-ups, not raw chat transcripts.
+- Create or update only the records relevant to the user's request or to a
+  durable change produced by the work.
 
-   ## General
+## Safety and verification
 
-   | Ticket | Description | Status | Notes |
-   |--------|-------------|--------|-------|
-   ```
-2. Create `tasks/INDEX.md` with:
-   ```markdown
-   # Task Index
+- Inspect a record before changing it and preserve unrelated user content.
+- Use a safety checkpoint only when the planned work has meaningful rollback
+  risk. Choose a checkpoint appropriate to the project; do not create a tag or
+  backup automatically for every task.
+- Require plan approval only when the plan is non-trivial, destructive,
+  externally mutating, or otherwise needs a user decision.
+- Run checks appropriate to the project and the change. Do not require a
+  specific linter, score, test suite, or tool unless the project requires it.
+- Report what was verified and what remains unverified.
+- Follow the project's Git and release conventions. Create commits, branches,
+  tags, pushes, pull requests, or deployments only when requested or already
+  authorized by the active workflow.
 
-   Next available number: 1
-   ```
-3. If sprints are enabled and no sprint covers the current date, create
-   `sprints/SPRINT_YYYY-MM-DD.md`. Use the current date as the first sprint's
-   start and the configured duration to calculate its inclusive end date.
-4. Create `sessions/SESSION_YYYY-MM-DD.md` with sections for work done,
-   decisions, blockers, active focus, next steps, and a timesheet. Include the
-   sprint identifier and period when sprints are enabled.
-   Place `<!-- workflow:work-done -->` immediately before the work-done bullet
-   list so compaction can summarize a record in any language.
+## Detailed workflows
 
-Do not create `LAST_SESSION.md` during first-session startup. Its absence means
-there is no previous session. Create it when the first session is closed.
-
-### Session Start Procedure
-
-1. Verify real date with `date` command (never guess)
-2. Resolve `AI_CONTEXT_ROOT` and read `.workflow-config.json`
-3. Perform first-use initialization for missing records
-4. Read `RECAP.md`, `LAST_SESSION.md` when present, and the current sprint file
-5. Check if `sessions/SESSION_YYYY-MM-DD.md` exists — create if missing
-6. Display structured summary: sprint, open tasks, blockers, next steps
-
-### Session Close Procedure
-
-1. Finalize the current session record, including next steps and timesheet
-2. Create or update `LAST_SESSION.md`
-3. Update `RECAP.md`
-4. Update the current sprint when its tickets, blockers, or decisions changed
-
-### LAST_SESSION.md
-
-- Only a synthetic pointer — detailed content lives in session file
-- Updated AFTER the session file, never before
-- Missing before the first close is a valid state
-- Format:
-  ```markdown
-  # Ultima sessione
-  - **Data**: YYYY-MM-DD
-  - **File**: sessions/SESSION_YYYY-MM-DD.md
-  - **Branch**: <active branches>
-  - **Stato**: <one-line summary>
-  - **Prossimo**: <priority next step>
-  ```
-
-## Sprint Rules (`sprints/SPRINT_YYYY-MM-DD.md`)
-
-- One file per sprint (2 weeks), name = sprint start date
-- Contains: objective, tickets with status, blockers, decisions
-- Updated during session when ticket statuses change
-- Closed at sprint end (creates next sprint file)
-
-### Sprint States
-- ⬜ Todo / Draft / Open
-- 🔄 In Progress / In corso / Review
-- ⏸ Need Info / Blocked
-- ✅ Done / Closed
-- ❌ Cancelled
-
-## Task Rules (`tasks/{todo,done}/`)
-
-### INDEX.md — Source of Truth
-- One number = one task. Never reused.
-- Created automatically with next number `1` during the first session start
-- Read INDEX.md BEFORE creating a task to get next number
-- Update INDEX.md AFTER creating a task (register + increment)
-- Never assume number from filesystem
-
-### Task Lifecycle
-```
-1. ANALYSIS   → understand problem, read code, identify impacts
-2. PLAN       → task file with: objective, impacts, risks, execution plan
-3. APPROVAL   → explicit user confirmation (never proceed without "ok"/"procedi")
-4. EXECUTION  → step by step, updating status in plan
-5. VERIFY     → green tests, pylint 10/10, smoke test
-6. COMMIT     → only after green verification
-```
-
-### Task File Rules
-- Step 0 is ALWAYS a safety checkpoint (git tag or backup)
-- Execution plan requires explicit approval for non-trivial tasks
-- Update Status column during execution: ⬜ → 🔄 → ✅
-- Move file from `todo/` to `done/` on completion
-- Naming: `NN-slug-descrittivo.md`
-
-## RECAP.md
-
-- Global task list grouped by domain/area
-- Checkbox `[x]` / `[ ]` for status
-- Updated DURING the session when tasks change (not just at end)
-- Single source of truth for "what is open"
-
-## Focus Files (`focus/<slug>.md`)
-
-- An AI-assisted notebook for a study topic, evolving analysis, project idea,
-  or reminder that benefits from durable context.
-- Create or update one when the user asks to take notes, study, explore, save
-  an idea, or resume a topic. Derive a concise title and `<slug>` when none is
-  provided; no fixed template is required.
-- Keep the useful current understanding near the top, and use sections that
-  fit the topic, such as notes, sources, questions, ideas, decisions, or next
-  steps.
-- Link it from a session file when it is actively worked on during that
-  session.
-
-## Meeting Records (`meetings/MEETING_YYYY-MM-DD-<slug>.md`)
-
-- Create a record when a meeting, call, review, or decision-making
-  conversation has outcomes that must survive the current session.
-- Keep it concise: attendees or stakeholders, purpose, decisions, owners,
-  follow-ups, and links to affected tasks, focus files, or roadmap items.
-- Do not treat a chat transcript as a meeting record. Capture only durable
-  outcomes and unresolved follow-ups.
-
-## Roadmap Files (`roadmap/<slug>.md`)
-
-- Use roadmap files as the central project direction for outcomes, milestones,
-  sequencing, and dependencies that extend beyond the active sprint.
-- Keep the current direction at the top, followed by a dated decision/history
-  section. Link sprint tickets and focus files rather than duplicating them.
-- Update a roadmap when priorities, milestones, or dependencies change; do not
-  create one for a single task with no long-horizon implication.
-
-## Compiled Truth Pattern
-
-Every technical document follows this principle:
-- **Top**: current state (compiled truth — rewritten when it changes)
-- **Bottom/Timeline**: historical events (append-only, never modified)
-
-## Language Convention
-
-| Context | Language |
-|---------|----------|
-| Sessions, RECAP, focus, tasks, meetings, roadmaps | `record_language` in `.workflow-config.json` (default: English) |
-| Code, comments, docstrings | English |
-| Official docs (README, docs/) | English |
-| Commit messages, issue trackers | English |
-| Issue-tracker comments | English, using the format supported by the tracker |
-
-Read `record_language` before creating or updating a human-authored context
-record. Existing contexts without this field use English. The compaction marker
-`<!-- workflow:work-done -->` is language-neutral; existing Italian and English
-session headings remain supported for backward compatibility.
-
-## Mandatory Behavioral Rules
-
-### Human-in-the-Loop (NEVER proceed without explicit confirmation)
-- `git push --force`, `git reset --hard`
-- Deleting multiple files/directories
-- Production DB modifications, deploy to ACC/PROD
-- Modifying `.env`, credentials, tokens
-- Adding external dependencies
-
-### Error Recovery
-- Report exact error (command, exit code, stderr)
-- Identify root cause BEFORE attempting fix
-- Max 2 recovery approaches — if same approach fails twice, stop and explain
-- NEVER retry silently
-
-### Verification
-- Before citing a line number: verify with grep/read
-- Before modifying a file: re-read the section to change
-- After incremental edits: re-read the result before proceeding
-- If not verified: state it explicitly
-
-### Scope Discipline
-- Modify ONLY files related to the current task
-- Do NOT refactor surrounding code unless explicitly asked
-- Do NOT add features beyond what was requested
-- If a prerequisite is missing: report it, do not implement it
-
-## Git Conventions
-
-- **Branch**: use the project's preferred naming convention (for example, `feature/issue-123`)
-- **Commit**: use the project's preferred format — one logical change, tests included
-- **Tag**: `<package>-v<version>`
-- **Push**: always on branch, never on master directly
-- **Feature branch**: deleted after merge (no-ff)
-- **Deploy rule**: everything that gets deployed must be committed — deploy tool generates script from commits
+- Session lifecycle: `references/sessions.md`
+- Tasks and RECAP: `references/tasks.md`
+- Sprints, focus notes, meetings, and roadmaps:
+  `references/planning-and-notes.md`
+- Session retention and archives: `references/compaction.md`

@@ -11,15 +11,26 @@ Install only this GitHub path:
 packages/codex/workflow-management
 ```
 
-Confirm that the installed skill directory contains exactly one `SKILL.md`.
-Restart Codex if the skill does not appear after installation.
+Confirm that the installed skill directory contains exactly one `SKILL.md`,
+the four files under `references/`, and `agents/openai.yaml`. Restart Codex if
+the skill does not appear after installation.
 
 ## Configure
 
 Create a disposable context with `setup-skills.ps1` on Windows or
-`setup-skills.sh --path` on POSIX. Confirm that setup creates configuration and
-directories but does not create `RECAP.md`, `LAST_SESSION.md`, or
-`tasks/INDEX.md`.
+`bash setup-skills.sh --path` on POSIX. Confirm that setup creates configuration
+and directories but does not create `RECAP.md`, `LAST_SESSION.md`, or
+`tasks/INDEX.md`. Run setup again without `-Force` or `--force` and confirm that
+it refuses to replace the configuration.
+
+## Trigger boundaries
+
+Before starting a managed session, ask a one-off coding or explanatory question
+that does not request durable records. Confirm that Codex does not create or
+update the workflow context merely because the skill is installed.
+
+Then ask Codex to save a topic or decision for a later session. Confirm that it
+uses the workflow and creates only the relevant durable note.
 
 ## Implicit session start
 

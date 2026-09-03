@@ -105,7 +105,10 @@ if ! config_output=$(read_config); then
     echo "ERROR: Invalid configuration in $CONFIG_FILE."
     exit 1
 fi
-mapfile -t config_values <<< "$config_output"
+config_values=()
+while IFS= read -r value; do
+    config_values+=("$value")
+done <<< "$config_output"
 COMPACT_ENABLED="${config_values[0]}"
 RETENTION_DAYS="${config_values[1]}"
 GROUP_BY="${config_values[2]}"
@@ -149,7 +152,7 @@ echo "  Configured retention: ${RETENTION_DAYS} days"
 if [[ "$SPRINT_ENABLED" == "true" ]]; then
     echo "  Sprint buffer:        ${SPRINT_BUFFER} days (2 × ${SPRINT_WEEKS}w)"
 fi
-echo "  Effective retention:  ${EFFECTIVE_RETENTION} days (max of configured + buffer)"
+echo "  Effective retention:  ${EFFECTIVE_RETENTION} days (maximum of configured, 25-day floor, and sprint buffer)"
 echo "  Cutoff date:          $CUTOFF_DATE (files older than this will be archived)"
 echo "  Group by:             $GROUP_BY"
 echo "  Dry run:              $DRY_RUN"
@@ -157,8 +160,8 @@ echo "  Delete originals:     $DELETE_ORIGINALS"
 echo ""
 
 # Collect session files older than cutoff
-declare -A MONTH_FILES  # group key -> newline-separated file list
 FILES_TO_ARCHIVE=()
+GROUP_KEYS=()
 
 for f in "$SESSIONS_DIR"/SESSION_*.md; do
     [[ -f "$f" ]] || continue
@@ -199,7 +202,7 @@ PY
             fi
         fi
 
-        MONTH_FILES["$key"]+="$f"$'\n'
+        GROUP_KEYS+=("$key")
     fi
 done
 
@@ -208,13 +211,28 @@ if [[ ${#FILES_TO_ARCHIVE[@]} -eq 0 ]]; then
     exit 0
 fi
 
-echo "Found ${#FILES_TO_ARCHIVE[@]} session file(s) to archive across ${#MONTH_FILES[@]} group(s)."
+SORTED_GROUP_KEYS=$(printf '%s\n' "${GROUP_KEYS[@]}" | sort -u)
+GROUP_COUNT=$(printf '%s\n' "$SORTED_GROUP_KEYS" | awk 'NF { count++ } END { print count + 0 }')
+
+echo "Found ${#FILES_TO_ARCHIVE[@]} session file(s) to archive across ${GROUP_COUNT} group(s)."
 echo ""
 
 # --- Process each group ---
 
-for key in $(echo "${!MONTH_FILES[@]}" | tr ' ' '\n' | sort); do
-    mapfile -t files < <(printf '%s' "${MONTH_FILES[$key]}" | sort)
+while IFS= read -r key; do
+    [[ -n "$key" ]] || continue
+    files=()
+    for ((index = 0; index < ${#FILES_TO_ARCHIVE[@]}; index++)); do
+        if [[ "${GROUP_KEYS[$index]}" == "$key" ]]; then
+            files+=("${FILES_TO_ARCHIVE[$index]}")
+        fi
+    done
+
+    sorted_files=()
+    while IFS= read -r sorted_file; do
+        [[ -n "$sorted_file" ]] && sorted_files+=("$sorted_file")
+    done < <(printf '%s\n' "${files[@]}" | sort)
+    files=("${sorted_files[@]}")
     recap_file="$ARCHIVE_DIR/${key}.md"
     zip_file="$ARCHIVE_DIR/${key}.zip"
 
@@ -310,7 +328,7 @@ for key in $(echo "${!MONTH_FILES[@]}" | tr ' ' '\n' | sort); do
     echo "    ✓ Created: $(basename "$recap_file")"
     echo "    ✓ Created: $(basename "$zip_file")"
     echo ""
-done
+done <<< "$SORTED_GROUP_KEYS"
 
 echo "════════════════════════════════════════════"
 echo "  Compaction complete!"
