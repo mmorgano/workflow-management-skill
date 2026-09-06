@@ -1,0 +1,18 @@
+.workflow-config.json
+sessions/
+tasks/
+focus/
+roadmap/
+meetings/
+RECAP.md
+LAST_SESSION.md
+
+# Keep the starter example in version control.
+!examples/
+!examples/**/
+!examples/**
+
+# Keep the self-contained Codex package examples in version control.
+!packages/
+!packages/**/
+!packages/codex/workflow-management/examples/**
