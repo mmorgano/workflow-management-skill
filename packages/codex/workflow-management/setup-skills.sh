@@ -4,6 +4,7 @@
 # Usage:
 #   ./setup-skills.sh                      # Interactive wizard
 #   ./setup-skills.sh --path /abs/path [--record-language English] [--force]
+#   ./setup-skills.sh --path /abs/path --here   # per-project context
 #
 # The wizard configures:
 #   1. AI_CONTEXT_ROOT path
@@ -14,6 +15,12 @@
 # The runtime configuration is saved to: <AI_CONTEXT_ROOT>/.workflow-config.json
 # A small user-local pointer is kept only so the compaction command can be run
 # without repeating the context path.
+#
+# --here scaffolds a per-project context that is attached to a multi-root
+# workspace (a root holding .workflow-config.json) rather than through the
+# user-local pointer. With --here the pointer is neither read nor written, so
+# several projects on one machine can each keep an independent context. Setup
+# then prints the snippet to add to the .code-workspace file.
 
 set -euo pipefail
 
@@ -54,6 +61,28 @@ ask_number() {
     done
 }
 
+print_workspace_snippet() {
+    local root="$1"
+    cat <<EOF
+
+── Attach this context to your VS Code workspace ─────────────
+Add the context directory as a root in your .code-workspace file:
+
+  {
+    "folders": [
+      { "path": "your-project" },
+      { "path": "$root" }
+    ]
+  }
+
+A relative "path" also works when the .code-workspace file sits beside the
+directory. Then reload the window (or use File > Add Folder to Workspace...).
+The agent resolves this context from the workspace root that contains
+.workflow-config.json; no user-local pointer is used.
+─────────────────────────────────────────────────────────────
+EOF
+}
+
 ensure_layout() {
     local root="$1"
     mkdir -p "$root/sessions/archive"
@@ -70,11 +99,15 @@ usage() {
 Usage:
   ./setup-skills.sh
   ./setup-skills.sh [--force]
-  ./setup-skills.sh --path /absolute/path [--record-language Language] [--force]
+  ./setup-skills.sh --path /absolute/path [--record-language Language] [--force] [--here]
 
 By default, setup refuses to replace an existing context configuration or a
 pointer to a different context. Use --force only when reconfiguration is
 intentional.
+
+--here scaffolds a per-project context without touching the user-local
+pointer, for a context attached to a multi-root workspace. Setup prints the
+.code-workspace snippet to add.
 EOF
 }
 
@@ -98,6 +131,11 @@ ensure_config_write_allowed() {
         return 1
     fi
 
+    # --here does not touch the user-local pointer, so its state is irrelevant.
+    if [[ "$HERE" == "true" ]]; then
+        return 0
+    fi
+
     if [[ -f "$CONTEXT_POINTER_FILE" ]]; then
         existing_root=$(read_pointer_root)
         if [[ -z "$existing_root" && "$FORCE" != "true" ]]; then
@@ -112,6 +150,7 @@ ensure_config_write_allowed() {
 }
 
 FORCE=false
+HERE=false
 NEW_PATH=""
 RECORD_LANGUAGE_ARG=""
 
@@ -145,6 +184,10 @@ while [[ $# -gt 0 ]]; do
             FORCE=true
             shift
             ;;
+        --here)
+            HERE=true
+            shift
+            ;;
         -h|--help)
             usage
             exit 0
@@ -166,7 +209,11 @@ if [[ -n "$NEW_PATH" ]]; then
         exit 1
     fi
     ensure_config_write_allowed "$NEW_PATH"
-    mkdir -p "$NEW_PATH" "$CONFIG_DIR"
+    if [[ "$HERE" == "true" ]]; then
+        mkdir -p "$NEW_PATH"
+    else
+        mkdir -p "$NEW_PATH" "$CONFIG_DIR"
+    fi
     python3 - "$NEW_PATH/.workflow-config.json" "$NEW_PATH" "$RECORD_LANGUAGE" <<'PY'
 import json
 import sys
@@ -181,16 +228,21 @@ with open(sys.argv[1], "w", encoding="utf-8") as handle:
     json.dump(payload, handle, indent=2)
     handle.write("\n")
 PY
-    python3 - "$CONTEXT_POINTER_FILE" "$NEW_PATH" <<'PY'
+    if [[ "$HERE" != "true" ]]; then
+        python3 - "$CONTEXT_POINTER_FILE" "$NEW_PATH" <<'PY'
 import json
 import sys
 with open(sys.argv[1], "w", encoding="utf-8") as handle:
     json.dump({"ai_context_root": sys.argv[2]}, handle, indent=2)
     handle.write("\n")
 PY
+    fi
     echo "✓ Configuration saved: $NEW_PATH/.workflow-config.json"
     ensure_layout "$NEW_PATH"
     echo "✓ Directory structure ensured"
+    if [[ "$HERE" == "true" ]]; then
+        print_workspace_snippet "$NEW_PATH"
+    fi
     exit 0
 fi
 
@@ -315,7 +367,9 @@ echo ""
 
 # --- Write config ---
 
-mkdir -p "$CONFIG_DIR"
+if [[ "$HERE" != "true" ]]; then
+    mkdir -p "$CONFIG_DIR"
+fi
 
 python3 - "$CTX_ROOT/.workflow-config.json" "$CTX_ROOT" "$SPRINT_ENABLED" "$SPRINT_WEEKS" "$COMPACT_ENABLED" "$COMPACT_RETENTION" "$COMPACT_GROUP" "$RECORD_LANGUAGE" <<'PY'
 import json
@@ -334,13 +388,15 @@ with open(path, "w", encoding="utf-8") as handle:
     handle.write("\n")
 PY
 
-python3 - "$CONTEXT_POINTER_FILE" "$CTX_ROOT" <<'PY'
+if [[ "$HERE" != "true" ]]; then
+    python3 - "$CONTEXT_POINTER_FILE" "$CTX_ROOT" <<'PY'
 import json
 import sys
 with open(sys.argv[1], "w", encoding="utf-8") as handle:
     json.dump({"ai_context_root": sys.argv[2]}, handle, indent=2)
     handle.write("\n")
 PY
+fi
 
 echo "✓ Configuration saved: $CTX_ROOT/.workflow-config.json"
 
@@ -357,4 +413,9 @@ echo "  Root:       $CTX_ROOT"
 echo "  Records:    $RECORD_LANGUAGE"
 echo "  Sprints:    $( [[ $SPRINT_ENABLED == true ]] && echo "enabled (${SPRINT_WEEKS}w)" || echo "disabled" )"
 echo "  Compaction: $( [[ $COMPACT_ENABLED == true ]] && echo "enabled (retain ${COMPACT_RETENTION}d, by ${COMPACT_GROUP})" || echo "disabled" )"
+echo "  Pointer:    $( [[ $HERE == true ]] && echo "not written (--here: attach via .code-workspace)" || echo "$CONTEXT_POINTER_FILE" )"
 echo "════════════════════════════════════════════"
+
+if [[ "$HERE" == "true" ]]; then
+    print_workspace_snippet "$CTX_ROOT"
+fi

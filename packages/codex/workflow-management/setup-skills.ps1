@@ -17,7 +17,14 @@ param(
 
     [switch]$DisableSprints,
     [switch]$DisableCompaction,
-    [switch]$Force
+    [switch]$Force,
+
+    # Scaffold a per-project context attached to a multi-root workspace (a root
+    # holding .workflow-config.json) instead of through the user-local pointer.
+    # With -Here the pointer is neither read nor written, so several projects on
+    # one machine can each keep an independent context. Prints the snippet to
+    # add to the .code-workspace file.
+    [switch]$Here
 )
 
 Set-StrictMode -Version Latest
@@ -55,7 +62,8 @@ if ((Test-Path -LiteralPath $configurationFile -PathType Leaf) -and -not $Force)
     throw "Configuration already exists: $configurationFile. Use -Force to replace it."
 }
 
-if ((Test-Path -LiteralPath $pointerFile -PathType Leaf) -and -not $Force) {
+# -Here does not touch the user-local pointer, so its state is irrelevant.
+if ((-not $Here) -and (Test-Path -LiteralPath $pointerFile -PathType Leaf) -and -not $Force) {
     $existingPointer = Get-Content -Raw -LiteralPath $pointerFile | ConvertFrom-Json
     $existingRoot = [System.IO.Path]::GetFullPath([string]$existingPointer.ai_context_root)
     if (-not $existingRoot.Equals($resolvedRoot, [System.StringComparison]::OrdinalIgnoreCase)) {
@@ -71,9 +79,11 @@ $directories = @(
     (Join-Path $resolvedRoot 'tasks\done'),
     (Join-Path $resolvedRoot 'focus'),
     (Join-Path $resolvedRoot 'roadmap'),
-    (Join-Path $resolvedRoot 'meetings'),
-    $pointerDirectory
+    (Join-Path $resolvedRoot 'meetings')
 )
+if (-not $Here) {
+    $directories += $pointerDirectory
+}
 
 foreach ($directory in $directories) {
     New-Item -ItemType Directory -Path $directory -Force | Out-Null
@@ -94,16 +104,43 @@ $configuration = [ordered]@{
     }
 }
 
-$pointer = [ordered]@{
-    ai_context_root = $resolvedRoot
-}
-
 $configurationJson = ($configuration | ConvertTo-Json -Depth 4) + [Environment]::NewLine
-$pointerJson = ($pointer | ConvertTo-Json -Depth 2) + [Environment]::NewLine
 Write-Utf8NoBom -LiteralPath $configurationFile -Content $configurationJson
-Write-Utf8NoBom -LiteralPath $pointerFile -Content $pointerJson
 
 Write-Output "Configuration saved: $configurationFile"
-Write-Output "Context pointer saved: $pointerFile"
+
+if ($Here) {
+    Write-Output 'Context pointer: not written (-Here: attach via .code-workspace).'
+} else {
+    $pointer = [ordered]@{
+        ai_context_root = $resolvedRoot
+    }
+    $pointerJson = ($pointer | ConvertTo-Json -Depth 2) + [Environment]::NewLine
+    Write-Utf8NoBom -LiteralPath $pointerFile -Content $pointerJson
+    Write-Output "Context pointer saved: $pointerFile"
+}
+
 Write-Output 'Directory structure ensured.'
 Write-Output 'Operational Markdown records will be created when the first session starts.'
+
+if ($Here) {
+    $snippet = @"
+
+-- Attach this context to your VS Code workspace ------------
+Add the context directory as a root in your .code-workspace file:
+
+  {
+    "folders": [
+      { "path": "your-project" },
+      { "path": "$resolvedRoot" }
+    ]
+  }
+
+A relative "path" also works when the .code-workspace file sits beside the
+directory. Then reload the window (or use File > Add Folder to Workspace...).
+The agent resolves this context from the workspace root that contains
+.workflow-config.json; no user-local pointer is used.
+------------------------------------------------------------
+"@
+    Write-Output $snippet
+}

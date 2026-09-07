@@ -36,7 +36,10 @@ try {
         'CORE.md', 'conventions.md', 'setup-skills.ps1', 'setup-skills.sh',
         'compact-sessions.sh', 'references\sessions.md',
         'references\tasks.md', 'references\planning-and-notes.md',
-        'references\compaction.md'
+        'references\compaction.md',
+        'examples\basic-ai-context\README.md',
+        'examples\basic-ai-context\RECAP.md',
+        'examples\basic-ai-context\tasks\INDEX.md'
     ) | ForEach-Object {
         $rootContent = Get-Content -Raw -LiteralPath (Join-Path $repositoryRoot $_)
         $packageContent = Get-Content -Raw -LiteralPath (Join-Path $packageRoot $_)
@@ -93,6 +96,17 @@ try {
     & (Join-Path $repositoryRoot 'setup-skills.ps1') -ContextRoot $contextRoot -RecordLanguage Italian -Force
     $updatedConfiguration = Get-Content -Raw -LiteralPath $configurationFile | ConvertFrom-Json
     Assert-Condition ([string]$updatedConfiguration.record_language -eq 'Italian') 'Setup did not persist the configured record language.'
+
+    # -Here scaffolds a per-project context without reading or writing the pointer.
+    $hereConfigRoot = Join-Path $testRoot 'here-xdg'
+    $hereContext = Join-Path $testRoot 'ai_context_project'
+    $env:XDG_CONFIG_HOME = $hereConfigRoot
+    $hereOutput = & (Join-Path $repositoryRoot 'setup-skills.ps1') -ContextRoot $hereContext -Here | Out-String
+    Assert-Condition (Test-Path -LiteralPath (Join-Path $hereContext '.workflow-config.json') -PathType Leaf) '-Here did not create the configuration.'
+    Assert-Condition (Test-Path -LiteralPath (Join-Path $hereContext 'sessions\archive') -PathType Container) '-Here did not create the layout.'
+    Assert-Condition (-not (Test-Path -LiteralPath $hereConfigRoot)) '-Here created the pointer directory.'
+    Assert-Condition ($hereOutput.Contains('"folders"')) '-Here did not print the workspace snippet.'
+    Assert-Condition ($hereOutput.Contains($hereContext)) '-Here snippet omits the context path.'
 
     Write-Output 'PowerShell smoke tests passed'
 } finally {

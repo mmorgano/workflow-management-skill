@@ -121,6 +121,45 @@ must stay independent. A workspace should include only the context intended
 for that project session, so the agent never has to guess which records to
 update.
 
+<a id="per-project-contexts-multi-workspace"></a>
+
+### Per-project contexts (multi-workspace)
+
+To keep an independent context per project on one machine, give each its own
+directory and attach it through that project's multi-root workspace:
+
+```text
+C:\projects\
+  ai_context_alpha\        # .workflow-config.json (its own context)
+  ai_context_beta\         # .workflow-config.json
+  alpha\   beta\           # project source
+  alpha.code-workspace     # folders: [ "alpha", "ai_context_alpha" ]
+  beta.code-workspace      # folders: [ "beta", "ai_context_beta" ]
+```
+
+The directory name is free; the agent resolves the context from whichever
+workspace root contains `.workflow-config.json`. A workspace-local context
+always takes precedence over the machine-wide pointer, so the two projects
+never collide.
+
+Scaffold one with `--here` (PowerShell `-Here`), which creates the directory
+and configuration but does **not** touch the user-local pointer:
+
+```powershell
+.\setup-skills.ps1 -ContextRoot C:\projects\ai_context_alpha -Here
+```
+
+```bash
+bash ./setup-skills.sh --path /abs/path/to/ai_context_alpha --here
+```
+
+Setup then prints the `folders` snippet to add to the `.code-workspace` file.
+Add it with **File > Add Folder to Workspace...** and reload the window.
+
+If you start a session in a workspace that has no context, the agent offers to
+create one this way — it proposes a directory name, and creates it only after
+you confirm.
+
 ## Start the first session
 
 Open any workspace and ask:

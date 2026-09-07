@@ -57,6 +57,8 @@ verbatim transcript of every prompt and answer.
 During setup, choose where `ai-context` lives. It can sit alongside the project
 as a separate workspace root. Use a shared context across projects when you
 want continuity, or separate roots when their histories should remain independent.
+For an independent context per project on one machine, see
+[per-project contexts](docs/getting-started.md#per-project-contexts-multi-workspace).
 
 ```text
 Your project workspace
