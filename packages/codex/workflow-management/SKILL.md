@@ -34,9 +34,12 @@ Initialize it with `setup-skills.sh`; on Windows, prefer the native
 `setup-skills.ps1` script. Setup refuses to replace an existing configuration
 unless the user intentionally supplies `--force` or `-Force`.
 
-Follow the context resolution order in `CORE.md`. If no valid configuration can
-be resolved, ask for the context root or ask the user to run setup. Do not infer
-the shared context by broadly analyzing the workspace.
+Follow the context resolution order in `CORE.md`. Do not infer the shared
+context by broadly analyzing the workspace, and never attach a context that
+belongs to a different workspace. If the order resolves nothing, follow
+`references/sessions.md` § "When no context resolves": offer to create a
+context for this workspace; only if the user declines, ask for an existing
+path or proceed without workflow records.
 
 ## Codex behavior
 
