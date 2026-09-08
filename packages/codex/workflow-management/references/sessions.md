@@ -6,16 +6,20 @@ session.
 ## When no context resolves
 
 If the resolution order in `CORE.md` finds no context (no workspace root and no
-working-directory `.workflow-config.json`, and the user-local pointer is absent
-or has no matching entry and no `default`), do not fall back to an arbitrary
-directory. Before asking for a path, offer to create a context for this
-workspace:
+working-directory `.workflow-config.json`, and `context-path.json` is absent or
+has no matching entry and no `default`), do not fall back to an arbitrary
+directory, and do not offer to attach one of the other contexts on the machine —
+those belong to other workspaces. The default action here is to create a new
+context for this workspace. Before asking for a path, offer that:
 
 1. Propose a directory name, taking the first available of: the `.code-workspace`
    file name without its extension, the main project folder of the workspace,
    or the current directory name — as `ai_context_<name>`. Propose a location
-   beside the project. Show both and let the user change them; never create
-   silently.
+   the same way: beside the `.code-workspace` file when the workspace is saved,
+   otherwise beside the workspace's main folder — and always outside the
+   project's own repository. When no folder is open, propose it in the current
+   working directory and say that this is a guess to confirm. Show name and
+   location and let the user change them; never create silently.
 2. On confirmation, run the setup script with the per-project flag —
    `setup-skills.ps1 -ContextRoot <path> -Here` or
    `bash setup-skills.sh --path <path> --here` — so the context is attached
@@ -26,7 +30,8 @@ workspace:
 4. Continue with first-use initialization below.
 
 If the user declines, ask for an existing context path or proceed without
-workflow records for this request.
+workflow records for this request. Attach an existing context only when the
+user names it; do not propose one yourself.
 
 ## First-use initialization
 
@@ -56,7 +61,9 @@ list so compaction can summarize records in any configured language.
 
 1. Verify the current date from a reliable runtime source; do not guess it.
 2. Resolve `<AI_CONTEXT_ROOT>` and read `.workflow-config.json`. If nothing
-   resolves, follow "When no context resolves" above.
+   resolves, follow "When no context resolves" above. Do not read `RECAP.md`,
+   `LAST_SESSION.md`, or any session, task, or sprint record until the root is
+   resolved — reading them commits the session to that context.
 3. Initialize missing first-use records.
 4. Read `RECAP.md`, `LAST_SESSION.md` when present, and the current sprint when
    enabled.
