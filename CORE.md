@@ -53,18 +53,27 @@ Resolve `<AI_CONTEXT_ROOT>` to the first of these that succeeds:
    If more than one workspace root qualifies, ask which one to use.
 3. **A `.workflow-config.json` in the current working directory or workspace
    folder** that resolves back to itself.
-4. **The user-local pointer** `context-path.json`:
+4. **The user-local pointer**: a file named exactly `context-path.json` at the
+   path above. Any other file in that directory — a backup or renamed copy such
+   as `context-path.json.bak`, an editor swap file — is not a resolution source
+   and must be ignored. If `context-path.json` is absent, this step fails; go to
+   step 5. When it is present:
    - map form — `{ "contexts": { "<workspace path>": "<context path>", … },
      "default": "<context path>" }`: use the entry whose key matches the
      current workspace, else `default`, else ask;
    - string form (legacy) — `{ "ai_context_root": "<context path>" }`.
-5. **Otherwise**, do not select an arbitrary directory. Offer to create a
-   context for this workspace (see `references/sessions.md`) or ask for the
-   path.
+5. **Otherwise**, do not select an arbitrary directory and do not attach a
+   context that belongs to a different workspace. Offer to create a context for
+   this workspace (see `references/sessions.md`) or ask for the path.
 
 Steps 2 and 3 (workspace-local) always precede step 4 (the machine-wide
 pointer), so independent projects on one machine each resolve to their own
 context. A context scaffolded with `--here` is attached through step 2.
+
+Until `<AI_CONTEXT_ROOT>` is resolved, do not read `RECAP.md`,
+`LAST_SESSION.md`, or any session, task, or sprint record. Reading a context's
+operational records commits the session to that context, so a step-5 outcome
+must be reached before any such read.
 
 The context layout includes `sessions/`, `tasks/`, `sprints/`, `focus/`,
 `meetings/`, `roadmap/`, and the runtime configuration. Features such as
