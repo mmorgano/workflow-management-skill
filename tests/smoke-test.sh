@@ -18,6 +18,7 @@ PY
 
 bash -n "$ROOT/setup-skills.sh"
 bash -n "$ROOT/compact-sessions.sh"
+bash -n "$ROOT/sync-codex-package.sh"
 bash -n "$ROOT/packages/codex/workflow-management/setup-skills.sh"
 bash -n "$ROOT/packages/codex/workflow-management/compact-sessions.sh"
 
@@ -61,14 +62,34 @@ if XDG_CONFIG_HOME="$TMP/setup-config" "$ROOT/setup-skills.sh" --path "$OTHER_CO
 fi
 test ! -e "$OTHER_CONTEXT"
 
+# --here scaffolds a per-project context without reading or writing the pointer.
+HERE_CONFIG="$TMP/here-config"
+HERE_CONTEXT="$TMP/ai_context_project"
+XDG_CONFIG_HOME="$HERE_CONFIG" "$ROOT/setup-skills.sh" --path "$HERE_CONTEXT" --here --record-language English \
+    > "$TMP/here-output.txt"
+test -f "$HERE_CONTEXT/.workflow-config.json"
+test -d "$HERE_CONTEXT/sessions/archive"
+test -d "$HERE_CONTEXT/tasks/todo"
+test ! -e "$HERE_CONFIG"
+grep -Fq '"folders"' "$TMP/here-output.txt"
+grep -Fq "$HERE_CONTEXT" "$TMP/here-output.txt"
+# A pre-existing pointer to another context does not block --here and is left
+# untouched.
+mkdir -p "$TMP/existing-pointer/skill-workflow-management"
+PRESET_POINTER="$TMP/existing-pointer/skill-workflow-management/context-path.json"
+printf '{"ai_context_root":"%s"}\n' "$SETUP_CONTEXT" > "$PRESET_POINTER"
+XDG_CONFIG_HOME="$TMP/existing-pointer" "$ROOT/setup-skills.sh" --path "$TMP/ai_context_second" --here >/dev/null
+test -f "$TMP/ai_context_second/.workflow-config.json"
+python3 - "$PRESET_POINTER" "$SETUP_CONTEXT" <<'PY'
+import json
+import sys
+with open(sys.argv[1], encoding="utf-8") as handle:
+    assert json.load(handle)["ai_context_root"] == sys.argv[2], "--here must not rewrite the pointer"
+PY
+
 # The installable Codex package must stay synchronized and expose one skill.
 PACKAGE="$ROOT/packages/codex/workflow-management"
-for file in \
-    CORE.md conventions.md setup-skills.sh setup-skills.ps1 compact-sessions.sh \
-    references/sessions.md references/tasks.md \
-    references/planning-and-notes.md references/compaction.md; do
-    cmp "$ROOT/$file" "$PACKAGE/$file"
-done
+"$ROOT/sync-codex-package.sh" --check
 test -x "$PACKAGE/setup-skills.sh"
 test -x "$PACKAGE/compact-sessions.sh"
 test -f "$PACKAGE/agents/openai.yaml"
@@ -100,6 +121,16 @@ EOF
 
 XDG_CONFIG_HOME="$TMP" "$ROOT/compact-sessions.sh" --dry-run > "$TMP/dry-run.txt"
 grep -Fq "sprint-$OLD_DATE" "$TMP/dry-run.txt"
+
+# The map form of the pointer resolves through "default" outside a workspace.
+cat > "$TMP/skill-workflow-management/context-path.json" <<EOF
+{"contexts":{"/some/workspace":"/nonexistent"},"default":"$TMP/context"}
+EOF
+XDG_CONFIG_HOME="$TMP" "$ROOT/compact-sessions.sh" --dry-run > "$TMP/dry-run-map.txt"
+grep -Fq "sprint-$OLD_DATE" "$TMP/dry-run-map.txt"
+cat > "$TMP/skill-workflow-management/context-path.json" <<EOF
+{"ai_context_root":"$TMP/context"}
+EOF
 
 # English template headings must make it into the real archive recap.
 XDG_CONFIG_HOME="$TMP" "$ROOT/compact-sessions.sh"

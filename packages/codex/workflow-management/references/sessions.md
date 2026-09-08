@@ -3,6 +3,31 @@
 Read this reference when starting, resuming, checkpointing, or closing a work
 session.
 
+## When no context resolves
+
+If the resolution order in `CORE.md` finds no context (no workspace root and no
+working-directory `.workflow-config.json`, and the user-local pointer is absent
+or has no matching entry and no `default`), do not fall back to an arbitrary
+directory. Before asking for a path, offer to create a context for this
+workspace:
+
+1. Propose a directory name, taking the first available of: the `.code-workspace`
+   file name without its extension, the main project folder of the workspace,
+   or the current directory name — as `ai_context_<name>`. Propose a location
+   beside the project. Show both and let the user change them; never create
+   silently.
+2. On confirmation, run the setup script with the per-project flag —
+   `setup-skills.ps1 -ContextRoot <path> -Here` or
+   `bash setup-skills.sh --path <path> --here` — so the context is attached
+   through the workspace and not the machine-wide pointer.
+3. Print the `folders` snippet the setup script emits and ask the user to add
+   the directory to the `.code-workspace` file and reload the window. Do not
+   edit the `.code-workspace` file yourself.
+4. Continue with first-use initialization below.
+
+If the user declines, ask for an existing context path or proceed without
+workflow records for this request.
+
 ## First-use initialization
 
 After resolving a valid configuration, create only missing operational records:
@@ -30,7 +55,8 @@ list so compaction can summarize records in any configured language.
 ## Start or resume
 
 1. Verify the current date from a reliable runtime source; do not guess it.
-2. Resolve `<AI_CONTEXT_ROOT>` and read `.workflow-config.json`.
+2. Resolve `<AI_CONTEXT_ROOT>` and read `.workflow-config.json`. If nothing
+   resolves, follow "When no context resolves" above.
 3. Initialize missing first-use records.
 4. Read `RECAP.md`, `LAST_SESSION.md` when present, and the current sprint when
    enabled.

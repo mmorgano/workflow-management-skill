@@ -40,7 +40,12 @@ if [[ -z "$CTX_ROOT" ]]; then
 import json
 import sys
 with open(sys.argv[1], encoding="utf-8") as handle:
-    print(json.load(handle).get("ai_context_root", ""))
+    data = json.load(handle)
+# String form: {"ai_context_root": "..."}. Map form: {"contexts": {...},
+# "default": "..."}. A shell run has no current workspace, so the map form
+# resolves to "default"; pass an explicit path to compact another context.
+value = data.get("ai_context_root") or data.get("default", "")
+print(value if isinstance(value, str) else "")
 PY
 )
     fi

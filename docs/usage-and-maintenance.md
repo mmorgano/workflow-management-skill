@@ -29,9 +29,13 @@ The workflow stores its state as ordinary Markdown and JSON under the context
 root you choose. No external storage service is required, and the records can
 be inspected, edited, backed up, or versioned with normal file tools.
 
-Setup creates the configuration, directory structure, and context pointer. It
-does not create or overwrite operational Markdown records such as `RECAP.md`
-or `LAST_SESSION.md`; those are created by the session lifecycle when needed.
+Setup creates the configuration, directory structure, and — unless `--here` /
+`-Here` is used — the user-local context pointer. It does not create or
+overwrite operational Markdown records such as `RECAP.md` or `LAST_SESSION.md`;
+those are created by the session lifecycle when needed.
+
+For per-project contexts on one machine, see
+[Per-project contexts](getting-started.md#per-project-contexts-multi-workspace).
 
 Compaction runs only when explicitly requested. The recommended first step is
 a dry run, and real compaction verifies the ZIP archive before moving original

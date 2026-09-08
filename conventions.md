@@ -5,6 +5,15 @@ repository guidance, and platform policy take precedence. Do not impose a
 particular programming language, linter, branch model, merge strategy, or
 deployment process when the project has its own conventions.
 
+## Context resolution
+
+`<AI_CONTEXT_ROOT>` is resolved by content, not by directory name: a workspace
+root counts as a context when it holds a `.workflow-config.json` that points
+back to itself, whatever the directory is called. A workspace-local context
+always precedes the machine-wide pointer, so independent projects on one
+machine keep independent contexts. The full order is in
+[`CORE.md`](CORE.md#resolution-order).
+
 ## Record language
 
 Sessions, RECAP entries, tasks, focus notes, meetings, and roadmaps use
