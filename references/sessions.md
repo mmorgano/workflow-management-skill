@@ -15,8 +15,11 @@ context for this workspace. Before asking for a path, offer that:
 1. Propose a directory name, taking the first available of: the `.code-workspace`
    file name without its extension, the main project folder of the workspace,
    or the current directory name — as `ai_context_<name>`. Propose a location
-   beside the project. Show both and let the user change them; never create
-   silently.
+   the same way: beside the `.code-workspace` file when the workspace is saved,
+   otherwise beside the workspace's main folder — and always outside the
+   project's own repository. When no folder is open, propose it in the current
+   working directory and say that this is a guess to confirm. Show name and
+   location and let the user change them; never create silently.
 2. On confirmation, run the setup script with the per-project flag —
    `setup-skills.ps1 -ContextRoot <path> -Here` or
    `bash setup-skills.sh --path <path> --here` — so the context is attached
