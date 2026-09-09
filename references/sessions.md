@@ -47,6 +47,11 @@ Never overwrite an existing record during initialization. Do not create
 `LAST_SESSION.md` before the first session is closed; its absence means there
 is no previous session.
 
+When a new context is for a substantial project, offer the project intake in
+`references/steering.md` after creating the missing operational records. Use the
+answers to propose a right-sized steering set; create steering documents only
+after the user accepts the recommendation.
+
 ## Session record
 
 Use one session file per working day. Include work done, decisions, blockers,
@@ -66,10 +71,14 @@ list so compaction can summarize records in any configured language.
    resolved — reading them commits the session to that context.
 3. Initialize missing first-use records.
 4. Read `RECAP.md`, `LAST_SESSION.md` when present, and the current sprint when
-   enabled.
+   enabled. When RECAP or a decision record points to steering documents, read
+   them in the stated order and summarize the project state before selecting a
+   focus.
 5. Create today's session file only when it is missing.
 6. Present a concise summary of the current sprint, open work, blockers, and
-   next steps.
+   next steps. For steered projects, also include the current phase, what is
+   done, what is missing, and the natural next step; then decide the session
+   focus with the user.
 
 ## Checkpoints
 
@@ -83,6 +92,8 @@ activity.
 2. Create or update `LAST_SESSION.md` as a short pointer to the session file.
 3. Update `RECAP.md` when open work changed.
 4. Update the active sprint when its tickets, blockers, or decisions changed.
+5. Update roadmap, vision, or decision records when phases, direction,
+   constraints, or durable decisions changed.
 
 `LAST_SESSION.md` should contain the date, session file, relevant branches or
 projects, a one-line state summary, and the next priority. Translate visible

@@ -78,6 +78,8 @@ must be reached before any such read.
 The context layout includes `sessions/`, `tasks/`, `sprints/`, `focus/`,
 `meetings/`, `roadmap/`, and the runtime configuration. Features such as
 sprints and compaction may be disabled even when their directories exist.
+Long-lived or multi-component projects may also maintain right-sized steering
+records such as vision, roadmap, and decision records under `roadmap/`.
 
 ## Load detailed rules on demand
 
@@ -86,6 +88,8 @@ sprints and compaction may be disabled even when their directories exist.
 - For task lifecycle, numbering, or RECAP updates, read `references/tasks.md`.
 - For sprints, focus notes, meetings, or roadmaps, read
   `references/planning-and-notes.md`.
+- For project intake, steering documents, decision records, session rituals, or
+  documentation hygiene, read `references/steering.md`.
 - For session archives or retention, read `references/compaction.md`.
 
 A request can require more than one reference. Do not load unrelated references.
