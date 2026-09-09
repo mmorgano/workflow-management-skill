@@ -7,10 +7,10 @@ description: Maintain durable, file-based work context across AI sessions, inclu
 
 Use this skill only for durable workflow context: managed sessions, persistent
 task records, saved or resumed notes, meeting outcomes, sprints, roadmaps,
-RECAP review, or session archives. A request to start a managed work session
-must activate this workflow instead of becoming a general workspace analysis.
-Do not turn an ordinary coding request, one-off explanation, or transient to-do
-list into workflow records.
+steering documents, decision records, RECAP review, or session archives. A
+request to start a managed work session must activate this workflow instead of
+becoming a general workspace analysis. Do not turn an ordinary coding request,
+one-off explanation, or transient to-do list into workflow records.
 
 Before changing the workflow context:
 
@@ -21,6 +21,8 @@ Before changing the workflow context:
    - `references/tasks.md` for tasks and RECAP;
    - `references/planning-and-notes.md` for sprints, saved notes, meetings, or
      roadmaps;
+   - `references/steering.md` for project intake, steering documents, decision
+     records, session rituals, or documentation hygiene;
    - `references/compaction.md` for retention and archives.
 
 For session start or close, also read the task rules because session lifecycle
