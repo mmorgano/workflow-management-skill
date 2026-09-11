@@ -22,6 +22,7 @@ bash -n "$ROOT/sync-codex-package.sh"
 bash -n "$ROOT/packages/codex/workflow-management/setup-skills.sh"
 bash -n "$ROOT/packages/codex/workflow-management/compact-sessions.sh"
 test -f "$ROOT/references/steering.md"
+test -f "$ROOT/references/tracking.md"
 
 # Non-interactive setup must create the portable runtime configuration.
 SETUP_CONTEXT="$TMP/setup context's"
@@ -98,6 +99,7 @@ grep -Fq 'display_name: "Workflow Management"' "$PACKAGE/agents/openai.yaml"
 grep -Fq '$workflow-management' "$PACKAGE/agents/openai.yaml"
 test "$(find "$PACKAGE" -name SKILL.md -type f | wc -l)" -eq 1
 test -f "$PACKAGE/references/steering.md"
+test -f "$PACKAGE/references/tracking.md"
 
 # The repository root is the Claude Code skill; there is no adapters/ tree.
 test ! -e "$ROOT/adapters"

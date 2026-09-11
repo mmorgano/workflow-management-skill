@@ -94,6 +94,15 @@ activity.
 4. Update the active sprint when its tickets, blockers, or decisions changed.
 5. Update roadmap, vision, or decision records when phases, direction,
    constraints, or durable decisions changed.
+6. When `management_tier` is `long-vision`, also run the closure checks in
+   `references/tracking.md` § Closure ritual (status trigger, blocker
+   promotion, focus-to-decision promotion, consistency check). These are
+   additional conditional checks, not a heavier version of steps 1-5 above —
+   at every other tier, close ends at step 5.
+
+`LAST_SESSION.md` should contain the date, session file, relevant branches or
+projects, a one-line state summary, and the next priority. Translate visible
+labels using `record_language`.
 
 `LAST_SESSION.md` should contain the date, session file, relevant branches or
 projects, a one-line state summary, and the next priority. Translate visible

@@ -47,6 +47,11 @@ Choose the lightest structure that keeps the project legible:
 For large projects, also consider a decision record when choices need to stay
 auditable across sessions.
 
+Independently of this ladder, a project may also switch on the `long-vision`
+tracking layer (see `references/tracking.md`) when duration or complexity
+crosses certain signals. That switch is orthogonal to document size: it is a
+persisted on/off flag, not a fourth, larger rung on this ladder.
+
 ## Decision Records
 
 Use an ADR-lite decision record when project direction, architecture, policy, or
@@ -61,6 +66,29 @@ Keep the record append-only:
 - do not rewrite past entries to change history;
 - when a decision changes, add a new entry that supersedes the old one;
 - distinguish decided constraints from open questions.
+
+Give each entry a **state**: `proposed` (a concrete default, awaiting
+confirmation) → `confirmed` (immutable, as above) → `superseded`. A question
+that already has a concrete default proposal is written **directly here** as
+`proposed` — it does not pass through a focus note first. Focus notes stay
+reasoning and exploration (`references/planning-and-notes.md` § Focus notes);
+a decision entry may link to one for background, never the other way round —
+a focus note must never be the only place an id lives.
+
+When more than one document owns identifiers (phase numbers, requirement
+codes, decision codes), keep a short prefix-to-file index near the top of the
+decision record, e.g. "`D-` → this file · `P-` → the phase roadmap · `R-` →
+the code repo's own decisions doc". This makes any id traceable without
+opening every file, and scales better than encoding the prefix into a
+filename, since one file can end up owning more than one id family over time.
+
+**Adopting this on a project that already has history**: never rewrite it in
+bulk. (1) Add the prefix index once, at adoption time — cheap, and untouched
+content stays untouched. (2) Move (not copy) only decision nodes that are
+still **open** — found in a focus note or elsewhere, not yet confirmed — into
+this record as `proposed` entries; they are live work, not history. (3) Leave
+already-closed, confirmed material exactly where it is, unformatted — it is
+history, and rewriting it would fight the append-only rule above.
 
 For substantial projects, keep a "how to resume" section near the top. It should
 list the reading order for any assistant or teammate: vision, roadmap, decision
