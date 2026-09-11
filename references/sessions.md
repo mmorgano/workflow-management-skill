@@ -103,7 +103,3 @@ activity.
 `LAST_SESSION.md` should contain the date, session file, relevant branches or
 projects, a one-line state summary, and the next priority. Translate visible
 labels using `record_language`.
-
-`LAST_SESSION.md` should contain the date, session file, relevant branches or
-projects, a one-line state summary, and the next priority. Translate visible
-labels using `record_language`.
