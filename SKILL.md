@@ -7,13 +7,14 @@ description: Maintain durable, file-based work context across AI sessions, inclu
 
 Use this skill only for durable workflow context: managed sessions, persistent
 tasks, saved or resumed notes, meeting outcomes, sprints, roadmaps, steering
-documents, decision records, RECAP review, or session archives. Do not turn an
-ordinary coding request, one-off explanation, or transient to-do list into
-workflow records.
+documents, decision records, long-running project tracking (status reports, a
+Risk & Issue register, phase-gates), RECAP review, or session archives. Do not
+turn an ordinary coding request, one-off explanation, or transient to-do list
+into workflow records.
 
 Before changing the workflow context, read `CORE.md` and `conventions.md`, then
 load only the relevant file under `references/`: `sessions.md`, `tasks.md`,
-`planning-and-notes.md`, `steering.md`, or `compaction.md`.
+`planning-and-notes.md`, `steering.md`, `tracking.md`, or `compaction.md`.
 
 ## Install
 

@@ -31,8 +31,11 @@ An adapter must instruct its agent to:
 ## Configuration and context resolution
 
 The runtime configuration is `<AI_CONTEXT_ROOT>/.workflow-config.json`. It
-controls sprint and compaction behavior and the language of human-authored
-workflow records.
+controls sprint and compaction behavior, the language of human-authored
+workflow records, and — when present — the `long-vision` tracking tier
+(`management_tier`, `since`, `declined_at`; see `references/tracking.md`).
+Its absence means the project is simply not yet classified, not that it is
+excluded from ever activating the tier.
 
 Unless `--here` / `-Here` is used, setup also writes
 `skill-workflow-management/context-path.json` under the platform configuration
@@ -90,6 +93,9 @@ records such as vision, roadmap, and decision records under `roadmap/`.
   `references/planning-and-notes.md`.
 - For project intake, steering documents, decision records, session rituals, or
   documentation hygiene, read `references/steering.md`.
+- For activating the `long-vision` tracking tier, status reports, a Risk &
+  Issue register, phase-gates, or the extended closure checks, read
+  `references/tracking.md`.
 - For session archives or retention, read `references/compaction.md`.
 
 A request can require more than one reference. Do not load unrelated references.
