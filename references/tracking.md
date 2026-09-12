@@ -39,7 +39,11 @@ is a manual setting the user is expected to toggle.
 - *Strong (any single one is enough to propose):* the user explicitly asks for
   a roadmap, a milestone plan, a status report, or a risk list · two or more
   repos/components in play **with declared dependencies** between them · more
-  than one person or a team involved.
+  than one person or a team involved · one or more milestones/phases with
+  **formal exit criteria already defined and in active use** (a demo
+  criterion, a STOP condition, a phase-gate) — this fires independently of
+  team size or repo count, since a solo single-repo project run this way is
+  exactly the case dated status snapshots and phase-gates are for.
 - *Weak (need two or more together to propose):* the user lists many
   features/deliverables at once · multi-phase or long-horizon language ("first
   ... then ... eventually", "over the next few months") · accumulation over
