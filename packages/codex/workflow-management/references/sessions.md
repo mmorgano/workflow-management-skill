@@ -12,6 +12,21 @@ directory, and do not offer to attach one of the other contexts on the machine �
 those belong to other workspaces. The default action here is to create a new
 context for this workspace. Before asking for a path, offer that:
 
+0. When the workspace is empty or otherwise looks like a project that does not
+   exist yet — not merely an existing project without a context so far — open
+   with a short framing pass instead of going straight to a directory name:
+   what it is, why it matters, how it will be judged successful, how
+   long-lived it is, whether it is a single component or several, and any
+   constraint that must shape decisions (privacy, licensing, client
+   boundaries, publication limits, compliance, technology goals). One
+   conversation answers three needs at once: it is the project intake
+   (`references/steering.md`), it feeds the scale assessment for the
+   `long-vision` tier (`references/tracking.md`), and it tells you whether
+   this is one project or several before any folder is created. Then, before
+   scaffolding folders, git, or dependencies, walk `references/bootstrap.md`
+   for the non-code traps (naming, git identity, legal/IP, dependencies
+   between your own components, licensing) — ask only what this project's
+   shape actually raises.
 1. Propose a directory name, taking the first available of: the `.code-workspace`
    file name without its extension, the main project folder of the workspace,
    or the current directory name — as `ai_context_<name>`. Propose a location

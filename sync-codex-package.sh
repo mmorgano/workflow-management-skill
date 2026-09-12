@@ -33,6 +33,7 @@ SHARED_FILES=(
     references/planning-and-notes.md
     references/steering.md
     references/tracking.md
+    references/bootstrap.md
     references/compaction.md
     examples/basic-ai-context/README.md
     examples/basic-ai-context/RECAP.md

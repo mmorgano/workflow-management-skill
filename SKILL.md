@@ -1,6 +1,6 @@
 ---
 name: workflow-management
-description: Maintain durable, file-based work context across AI sessions, including session logs, RECAP, workflow tasks, sprints, saved notes, meeting outcomes, roadmaps, and archives. Use when the user asks to start or close a managed work session or to preserve, resume, or organize context beyond the current conversation. Do not use for ordinary coding or one-off questions with no request for durable records.
+description: Maintain durable, file-based work context across AI sessions, including session logs, RECAP, workflow tasks, sprints, saved notes, meeting outcomes, roadmaps, and archives. Use when the user asks to start or close a managed work session, to preserve, resume, or organize context beyond the current conversation, or to start a new project, repository, or component from scratch. Do not use for ordinary coding or one-off questions with no request for durable records.
 ---
 
 # Workflow Management for Claude Code
@@ -8,13 +8,14 @@ description: Maintain durable, file-based work context across AI sessions, inclu
 Use this skill only for durable workflow context: managed sessions, persistent
 tasks, saved or resumed notes, meeting outcomes, sprints, roadmaps, steering
 documents, decision records, long-running project tracking (status reports, a
-Risk & Issue register, phase-gates), RECAP review, or session archives. Do not
-turn an ordinary coding request, one-off explanation, or transient to-do list
-into workflow records.
+Risk & Issue register, phase-gates), RECAP review, session archives, or
+bootstrapping a new repository or component. Do not turn an ordinary coding
+request, one-off explanation, or transient to-do list into workflow records.
 
 Before changing the workflow context, read `CORE.md` and `conventions.md`, then
 load only the relevant file under `references/`: `sessions.md`, `tasks.md`,
-`planning-and-notes.md`, `steering.md`, `tracking.md`, or `compaction.md`.
+`planning-and-notes.md`, `steering.md`, `tracking.md`, `bootstrap.md`, or
+`compaction.md`.
 
 ## Install
 
