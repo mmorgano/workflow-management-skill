@@ -123,6 +123,16 @@ Save this decision and the next step.
 Close the session and leave a handoff.
 ```
 
+## Starting something new
+
+The same skill also covers the moment before any of this exists: a new
+repository, component, package, or service. Share what you have in mind with
+your assistant before scaffolding anything — that one conversation doubles as
+the project framing and the context setup, and it surfaces the non-code traps
+(naming, git identity, legal/IP, dependencies between your own components)
+that are cheap to get right on day one and expensive to fix afterward. See
+[`references/bootstrap.md`](references/bootstrap.md).
+
 ## Alongside your existing tools
 
 Git preserves source history, Jira tracks issues, and documentation explains

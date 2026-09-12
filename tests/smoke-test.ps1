@@ -27,7 +27,9 @@ try {
         'CORE.md', 'SKILL.md', 'conventions.md', 'setup-skills.ps1',
         'setup-skills.sh', 'compact-sessions.sh', 'agents\openai.yaml',
         'references\sessions.md', 'references\tasks.md',
-        'references\planning-and-notes.md', 'references\compaction.md'
+        'references\planning-and-notes.md', 'references\steering.md',
+        'references\tracking.md', 'references\bootstrap.md',
+        'references\compaction.md'
     ) | ForEach-Object {
         Assert-Condition (Test-Path -LiteralPath (Join-Path $packageRoot $_) -PathType Leaf) "Missing package file: $_"
     }
@@ -36,6 +38,8 @@ try {
         'CORE.md', 'conventions.md', 'setup-skills.ps1', 'setup-skills.sh',
         'compact-sessions.sh', 'references\sessions.md',
         'references\tasks.md', 'references\planning-and-notes.md',
+        'references\steering.md', 'references\tracking.md',
+        'references\bootstrap.md',
         'references\compaction.md',
         'examples\basic-ai-context\README.md',
         'examples\basic-ai-context\RECAP.md',

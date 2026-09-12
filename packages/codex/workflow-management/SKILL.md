@@ -1,6 +1,6 @@
 ---
 name: workflow-management
-description: Maintain durable, file-based work context across AI sessions, including session logs, RECAP, workflow tasks, sprints, saved notes, meeting outcomes, roadmaps, and archives. Use when the user asks to start or close a managed work session or to preserve, resume, or organize context beyond the current conversation. Do not use for ordinary coding or one-off questions with no request for durable records.
+description: Maintain durable, file-based work context across AI sessions, including session logs, RECAP, workflow tasks, sprints, saved notes, meeting outcomes, roadmaps, and archives. Use when the user asks to start or close a managed work session, to preserve, resume, or organize context beyond the current conversation, or to start a new project, repository, or component from scratch. Do not use for ordinary coding or one-off questions with no request for durable records.
 ---
 
 # Workflow Management for Codex
@@ -8,11 +8,11 @@ description: Maintain durable, file-based work context across AI sessions, inclu
 Use this skill only for durable workflow context: managed sessions, persistent
 task records, saved or resumed notes, meeting outcomes, sprints, roadmaps,
 steering documents, decision records, long-running project tracking (status
-reports, a Risk & Issue register, phase-gates), RECAP review, or session
-archives. A request to start a managed work session must activate this
-workflow instead of becoming a general workspace analysis. Do not turn an
-ordinary coding request, one-off explanation, or transient to-do list into
-workflow records.
+reports, a Risk & Issue register, phase-gates), RECAP review, session
+archives, or bootstrapping a new repository or component. A request to start
+a managed work session must activate this workflow instead of becoming a
+general workspace analysis. Do not turn an ordinary coding request, one-off
+explanation, or transient to-do list into workflow records.
 
 Before changing the workflow context:
 
@@ -28,6 +28,8 @@ Before changing the workflow context:
    - `references/tracking.md` for activating the `long-vision` tracking tier,
      status reports, a Risk & Issue register, phase-gates, or the extended
      closure checks;
+   - `references/bootstrap.md` for starting a new repository, component,
+     package, or service from scratch;
    - `references/compaction.md` for retention and archives.
 
 For session start or close, also read the task rules because session lifecycle

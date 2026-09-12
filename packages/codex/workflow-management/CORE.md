@@ -96,6 +96,9 @@ records such as vision, roadmap, and decision records under `roadmap/`.
 - For activating the `long-vision` tracking tier, status reports, a Risk &
   Issue register, phase-gates, or the extended closure checks, read
   `references/tracking.md`.
+- For starting a new repository, component, package, or service from scratch —
+  naming, git identity, legal/IP, or dependencies between your own
+  components — read `references/bootstrap.md`.
 - For session archives or retention, read `references/compaction.md`.
 
 A request can require more than one reference. Do not load unrelated references.
