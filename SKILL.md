@@ -43,7 +43,13 @@ user can initialize it with `setup-skills.sh`; on Windows, use the native
 ## Claude Code behavior
 
 - Claude Code invokes this skill automatically when a request matches the
-  description above, or explicitly if the user references it by name.
+  description above, or explicitly if the user references it by name. This is
+  a judgment call, not a deterministic trigger: even a request that closely
+  echoes the description's own wording can occasionally be answered directly
+  instead, especially in a brand-new, empty project with nothing yet to signal
+  "this needs a managed session." A `SessionStart` hook can raise the odds of
+  activation deterministically; see `docs/getting-started.md` ("Optional: a
+  SessionStart hook for more reliable activation").
 - At session start, verify the current date before creating or naming any
   file — never guess it.
 - `tasks/INDEX.md` under `AI_CONTEXT_ROOT` is the durable, cross-session
