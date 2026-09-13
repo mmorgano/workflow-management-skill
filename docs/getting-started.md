@@ -160,6 +160,47 @@ If you start a session in a workspace that has no context, the agent offers to
 create one this way — it proposes a directory name, and creates it only after
 you confirm.
 
+## Optional: a SessionStart hook for more reliable activation (Claude Code)
+
+Skill activation is a judgment call the model makes by matching your request
+against this skill's description — even a request that closely echoes the
+trigger phrasing ("Let's start a new work session") can occasionally be
+answered directly instead of invoking the skill, especially in a brand-new,
+empty project where there is nothing yet to signal "this needs a managed
+session."
+
+Claude Code's `SessionStart` hook runs deterministically at the start of every
+session, independent of what you type first, and its output is added to the
+model's context. Adding one is optional and does not replace the skill or
+guarantee activation — it only raises the odds the skill gets considered
+before other work starts.
+
+Add this to `~/.claude/settings.json` (global, so it also covers brand-new
+project folders) or to a project's `.claude/settings.json` (team-shared):
+
+```json
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'Reminder: if this is the start of a new work session, or a new project starting from an empty folder, consider invoking the workflow-management skill before doing anything else.'"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+Merge it into the existing file rather than replacing it if `hooks` or other
+keys are already present. Review, edit, or remove it later from Claude Code's
+`/hooks` menu. This is Claude-Code-specific; other supported assistants do not
+read this file.
+
 ## Start the first session
 
 Open any workspace and ask:
