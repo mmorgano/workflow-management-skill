@@ -201,4 +201,4 @@ personal context and runtime configuration out of the public repository.
 
 ## License
 
-[MIT](LICENSE) © 2026 Maurizio Morgano.
+[Apache License 2.0](LICENSE) © 2026 Maurizio Morgano.
