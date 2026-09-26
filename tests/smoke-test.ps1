@@ -29,6 +29,7 @@ try {
         'references\sessions.md', 'references\tasks.md',
         'references\planning-and-notes.md', 'references\steering.md',
         'references\tracking.md', 'references\bootstrap.md',
+        'references\recap-maintenance.md', 'references\setup-guided.md',
         'references\compaction.md'
     ) | ForEach-Object {
         Assert-Condition (Test-Path -LiteralPath (Join-Path $packageRoot $_) -PathType Leaf) "Missing package file: $_"
@@ -40,6 +41,8 @@ try {
         'references\tasks.md', 'references\planning-and-notes.md',
         'references\steering.md', 'references\tracking.md',
         'references\bootstrap.md',
+        'references\recap-maintenance.md',
+        'references\setup-guided.md',
         'references\compaction.md',
         'examples\basic-ai-context\README.md',
         'examples\basic-ai-context\RECAP.md',

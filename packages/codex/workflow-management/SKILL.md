@@ -21,6 +21,8 @@ Before changing the workflow context:
 3. Read only the references relevant to the request:
    - `references/sessions.md` for session lifecycle;
    - `references/tasks.md` for tasks and RECAP;
+   - `references/recap-maintenance.md` for oversized RECAP or task-index
+     maintenance;
    - `references/planning-and-notes.md` for sprints, saved notes, meetings, or
      roadmaps;
    - `references/steering.md` for project intake, steering documents, decision
@@ -30,6 +32,7 @@ Before changing the workflow context:
      closure checks;
    - `references/bootstrap.md` for starting a new repository, component,
      package, or service from scratch;
+   - `references/setup-guided.md` for agent-guided context initialization;
    - `references/compaction.md` for retention and archives.
 
 For session start or close, also read the task rules because session lifecycle
@@ -39,9 +42,14 @@ enabled or another planning record is involved.
 ## Configuration
 
 The runtime configuration is `<AI_CONTEXT_ROOT>/.workflow-config.json`.
-Initialize it with `setup-skills.sh`; on Windows, prefer the native
-`setup-skills.ps1` script. Setup refuses to replace an existing configuration
-unless the user intentionally supplies `--force` or `-Force`.
+Prefer agent-guided setup: when the user asks to initialize a workflow context,
+read `references/setup-guided.md` and create the configuration and directory
+layout directly with the available file tools, asking before overwriting
+anything. `setup-skills.sh` and `setup-skills.ps1` remain available as
+automation fallbacks for technical users and tests. Setup refuses to replace an
+existing configuration unless the user intentionally supplies `--force`,
+`-Force`, or explicitly authorizes the equivalent overwrite during
+agent-guided setup.
 
 Follow the context resolution order in `CORE.md`. Do not infer the shared
 context by broadly analyzing the workspace, and never attach a context that

@@ -14,8 +14,8 @@ request, one-off explanation, or transient to-do list into workflow records.
 
 Before changing the workflow context, read `CORE.md` and `conventions.md`, then
 load only the relevant file under `references/`: `sessions.md`, `tasks.md`,
-`planning-and-notes.md`, `steering.md`, `tracking.md`, `bootstrap.md`, or
-`compaction.md`.
+`recap-maintenance.md`, `planning-and-notes.md`, `steering.md`, `tracking.md`,
+`bootstrap.md`, `setup-guided.md`, or `compaction.md`.
 
 ## Install
 
@@ -36,9 +36,13 @@ path, so keep the repository contents together.
 ## Configuration
 
 The runtime configuration is `<AI_CONTEXT_ROOT>/.workflow-config.json`. The
-user can initialize it with `setup-skills.sh`; on Windows, use the native
-`setup-skills.ps1`. Session compaction remains Bash-based and requires Python
-3, `zip`, and `unzip` in WSL or Git Bash (see the repository README).
+recommended setup path is agent-guided: when the user asks to initialize a
+context, read `references/setup-guided.md` and create the configuration and
+directory layout directly with the available file tools, asking before
+overwriting anything. `setup-skills.sh` and `setup-skills.ps1` remain available
+as automation fallbacks for technical users and tests. Session compaction
+remains Bash-based and requires Python 3, `zip`, and `unzip` in WSL or Git Bash
+(see the repository README).
 
 ## Claude Code behavior
 

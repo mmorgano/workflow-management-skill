@@ -29,10 +29,14 @@ The workflow stores its state as ordinary Markdown and JSON under the context
 root you choose. No external storage service is required, and the records can
 be inspected, edited, backed up, or versioned with normal file tools.
 
-Setup creates the configuration, directory structure, and — unless `--here` /
-`-Here` is used — the user-local context pointer. It does not create or
-overwrite operational Markdown records such as `RECAP.md` or `LAST_SESSION.md`;
-those are created by the session lifecycle when needed.
+Agent-guided setup or the setup scripts create the configuration, directory
+structure, and — unless the setup is workspace-local only — the user-local
+context pointer. They do not create or overwrite operational Markdown records
+such as `RECAP.md` or `LAST_SESSION.md`; those are created by the session
+lifecycle when needed.
+
+Prefer agent-guided setup for ordinary users. The scripts remain useful for
+repeatable setup, CI, troubleshooting, or users who explicitly want automation.
 
 For per-project contexts on one machine, see
 [Per-project contexts](getting-started.md#per-project-contexts-multi-workspace).
@@ -76,7 +80,8 @@ effective retention = max(configured days, 25, 2 × sprint duration in days)
 
 Ask the active agent to start or close a session, create a task, show the
 RECAP, plan a sprint, or compact sessions. The agent follows `CORE.md` and its
-adapter instructions. Review compaction first with:
+adapter instructions. For setup, ask the agent to initialize the context; it
+should follow `references/setup-guided.md`. Review compaction first with:
 
 ```bash
 bash ./compact-sessions.sh --dry-run
@@ -115,8 +120,8 @@ third-party code.
 - `packages/codex/workflow-management/` — canonical, self-contained Codex adapter and installation package
 - `packages/codex/workflow-management/agents/openai.yaml` — Codex UI metadata and default prompt
 - `references/` — session, task, planning, and compaction rules loaded on demand
-- `setup-skills.sh` — creates the context configuration and directory layout
-- `setup-skills.ps1` — native Windows context setup
+- `setup-skills.sh` — script fallback that creates the context configuration and directory layout
+- `setup-skills.ps1` — native Windows script fallback
 - `compact-sessions.sh` — safely archives old sessions
 - `conventions.md` — portable defaults that defer to project-specific rules
 - `examples/basic-ai-context/` — minimal starter context

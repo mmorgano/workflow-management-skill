@@ -32,9 +32,41 @@ Setup creates the configuration, directory layout, and user-local context
 pointer. Operational Markdown records are intentionally created by the agent
 when the first session starts, not by setup.
 
-Setup refuses to replace an existing configuration or a pointer to a different
-context. Use `-Force` on PowerShell or `--force` on Bash only when you intend to
-reconfigure the context.
+The recommended path is **agent-guided setup**: ask the assistant to initialize
+a workflow context, choose the context root, and let it create the same files
+and directories that the scripts would create. This keeps the install flow the
+same on Windows, Linux, macOS, WSL, and locked-down company machines where shell
+scripts may be inconvenient.
+
+Use the setup scripts when you want deterministic automation, CI coverage, or a
+technical fallback. Both the agent-guided path and scripts must refuse to
+replace an existing configuration or a pointer to a different context unless
+you explicitly approve reconfiguration.
+
+### Agent-guided setup
+
+Open the project workspace and ask:
+
+```text
+Initialize workflow management for this workspace.
+```
+
+The assistant should:
+
+1. choose or confirm `<AI_CONTEXT_ROOT>`;
+2. create `.workflow-config.json`;
+3. create the standard directories;
+4. create a user-local pointer only when appropriate;
+5. leave operational records such as `RECAP.md` and `LAST_SESSION.md` for the
+   first session lifecycle;
+6. report what it created and what remains unverified.
+
+If a context already exists, the assistant should inspect it and reuse it. It
+should ask before changing an existing config or replacing a pointer.
+
+### Script fallback
+
+The scripts remain available for repeatable setup and tests.
 
 ### Windows
 
