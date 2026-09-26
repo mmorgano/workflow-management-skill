@@ -63,6 +63,10 @@ path or proceed without workflow records.
 
 ## Codex behavior
 
+- When starting a session, greet briefly, summarize the state in a few plain
+  sentences (sprint, what is open, blockers, the natural next step), and ask what
+  to work on today. Keep it conversational rather than a report; use a list only
+  for several parallel items.
 - Treat the context directory as user data: inspect before changing it.
 - Keep records proportional to the request and preserve unrelated content.
 - Ask for confirmation before compaction, deletion, external publication, or
