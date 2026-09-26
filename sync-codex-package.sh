@@ -36,6 +36,7 @@ SHARED_FILES=(
     references/bootstrap.md
     references/recap-maintenance.md
     references/setup-guided.md
+    references/onboarding.md
     references/compaction.md
     examples/basic-ai-context/README.md
     examples/basic-ai-context/RECAP.md

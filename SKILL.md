@@ -15,7 +15,7 @@ request, one-off explanation, or transient to-do list into workflow records.
 Before changing the workflow context, read `CORE.md` and `conventions.md`, then
 load only the relevant file under `references/`: `sessions.md`, `tasks.md`,
 `recap-maintenance.md`, `planning-and-notes.md`, `steering.md`, `tracking.md`,
-`bootstrap.md`, `setup-guided.md`, or `compaction.md`.
+`bootstrap.md`, `setup-guided.md`, `onboarding.md`, or `compaction.md`.
 
 ## Install
 

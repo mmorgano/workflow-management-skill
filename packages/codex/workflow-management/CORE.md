@@ -105,6 +105,8 @@ records such as vision, roadmap, and decision records under `roadmap/`.
 - For starting a new repository, component, package, or service from scratch —
   naming, git identity, legal/IP, or dependencies between your own
   components — read `references/bootstrap.md`.
+- For the first-run introduction and language choice when no context resolves,
+  read `references/onboarding.md`.
 - For session archives or retention, read `references/compaction.md`.
 
 A request can require more than one reference. Do not load unrelated references.

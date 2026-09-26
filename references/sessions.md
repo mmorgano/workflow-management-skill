@@ -10,7 +10,10 @@ working-directory `.workflow-config.json`, and `context-path.json` is absent or
 has no matching entry and no `default`), do not fall back to an arbitrary
 directory, and do not offer to attach one of the other contexts on the machine —
 those belong to other workspaces. The default action here is to create a new
-context for this workspace. Before asking for a path, offer that:
+context for this workspace. Before proposing it, run the skippable first-run
+introduction in `references/onboarding.md`. It applies only when no context
+resolves at all; a context that exists but is unreadable is reported instead,
+never introduced again. Before asking for a path, offer that:
 
 0. When the workspace is empty or otherwise looks like a project that does not
    exist yet — not merely an existing project without a context so far — open

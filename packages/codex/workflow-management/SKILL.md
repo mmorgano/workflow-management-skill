@@ -33,6 +33,8 @@ Before changing the workflow context:
    - `references/bootstrap.md` for starting a new repository, component,
      package, or service from scratch;
    - `references/setup-guided.md` for agent-guided context initialization;
+   - `references/onboarding.md` for the first-run introduction when no context
+     resolves;
    - `references/compaction.md` for retention and archives.
 
 For session start or close, also read the task rules because session lifecycle
