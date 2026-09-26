@@ -106,7 +106,8 @@ records such as vision, roadmap, and decision records under `roadmap/`.
   naming, git identity, legal/IP, or dependencies between your own
   components — read `references/bootstrap.md`.
 - For the first-run introduction and language choice when no context resolves,
-  read `references/onboarding.md`.
+  or for plain-language answers about what a folder is for, what else the
+  skill can do, or tasks versus a long project, read `references/onboarding.md`.
 - For session archives or retention, read `references/compaction.md`.
 
 A request can require more than one reference. Do not load unrelated references.

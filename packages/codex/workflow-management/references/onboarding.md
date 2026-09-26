@@ -5,6 +5,10 @@ resolution order in `CORE.md`), before proposing to create one. It is a short,
 friendly, skippable introduction followed by the language choice. It is for
 people of every technical level: be warm, plain, and brief.
 
+Also read it, for the "Later questions" section only, when the user asks what
+a folder in the context is for, what else the skill can do, or how working by
+tasks differs from a long project.
+
 ## When it runs
 
 - **Only when no context resolves.** Never when a context is found.
@@ -104,3 +108,41 @@ language chosen in Step 3 so the project-intake conversation reuses it.
 After the flow, state what was created, the `record_language` chosen (and
 whether it was a default or a fallback), and that the introduction was shown or
 skipped.
+
+## Later questions
+
+Answer these on request, in the user's language and in plain words. Do not
+volunteer them beyond the one-line invitation in the setup report.
+
+### "What is this folder for?"
+
+Explain only the folder asked about, in one or two sentences:
+
+- `sessions/` — one note per working day: what happened and what comes next.
+- `tasks/` — what is open (`todo/`) and what is finished (`done/`).
+- `sprints/` — optional plans by period (for example two weeks).
+- `focus/` — notes while you explore a topic, before it becomes a decision.
+- `meetings/` — outcomes of meetings you want to keep.
+- `roadmap/` — the bigger picture: goals, phases, and decisions.
+
+Say that most of these stay empty until they are needed, and that only
+`sessions/` and `tasks/` are used from the first day.
+
+### "Working by tasks or a long project?"
+
+> **Working by tasks** is enough for most things: you list what to do, tick it
+> off, and I keep the notebook short.
+> **A long project** (many phases, months, several people or parts) benefits
+> from a bit more structure: dated status snapshots, a small list of risks and
+> open problems, and a check at each phase.
+> You don't have to choose now. If your work grows into that, I'll suggest it
+> and you decide.
+
+Do not activate anything because of this answer. The `long-vision` tier is only
+proposed and confirmed as described in `references/tracking.md`.
+
+### "What else can you do?"
+
+Name two or three things that fit what the user is doing now (for example
+"start each day where you left off", "keep the open work short", "record why
+you chose something"), and offer to explain one. Do not list every feature.
