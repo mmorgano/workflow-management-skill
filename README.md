@@ -15,6 +15,10 @@ in human-readable files that you can inspect and control.
 
 An open-source project by [MGM Garage Lab](https://mgmgaragelab.com/).
 
+<p align="center">
+  <img src="readme-assets/workflow-memory-comic.jpg" alt="Workflow Management comic showing a new chat without context becoming a project with memory, recap, tasks, and sessions." width="900">
+</p>
+
 ## Pick up the work with its context intact
 
 A project can span many conversations. The next session needs the decisions,
@@ -29,6 +33,17 @@ that context a durable home and a consistent way to maintain it.
 It is especially useful for work that spans sessions, several repositories,
 or a change of assistant. For a one-off question with nothing to preserve, the
 extra structure may be unnecessary.
+
+## Long-vision projects need navigation
+
+For multi-week or multi-month work, the risk is not only forgetting what
+happened yesterday. It is losing the route. Workflow Management keeps the
+roadmap, session log, current focus, risks, and next step close enough for an
+assistant to continue with direction instead of rediscovering the project.
+
+<p align="center">
+  <img src="readme-assets/workflow-voyage-map.jpg" alt="A nautical map showing Workflow Management as a route through roadmap, sessions, risks, focus, and long-term vision." width="900">
+</p>
 
 ## A handoff you can actually read
 
