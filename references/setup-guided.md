@@ -133,5 +133,9 @@ Report:
 - pointer created, reused, skipped, or left unchanged;
 - directories created or already present;
 - operational records intentionally not created;
+- a short map of the folders, one line each, saying that `sessions/` and
+  `tasks/` are used from the first day and the others stay empty until needed,
+  and inviting the user to ask what any folder is for or what else the skill
+  can do (see `references/onboarding.md`, "Later questions");
 - anything not verified.
 

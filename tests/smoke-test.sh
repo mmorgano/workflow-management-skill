@@ -26,6 +26,7 @@ test -f "$ROOT/references/tracking.md"
 test -f "$ROOT/references/bootstrap.md"
 test -f "$ROOT/references/recap-maintenance.md"
 test -f "$ROOT/references/setup-guided.md"
+test -f "$ROOT/references/onboarding.md"
 
 # Non-interactive setup must create the portable runtime configuration.
 SETUP_CONTEXT="$TMP/setup context's"
@@ -106,6 +107,7 @@ test -f "$PACKAGE/references/tracking.md"
 test -f "$PACKAGE/references/bootstrap.md"
 test -f "$PACKAGE/references/recap-maintenance.md"
 test -f "$PACKAGE/references/setup-guided.md"
+test -f "$PACKAGE/references/onboarding.md"
 
 # The repository root is the Claude Code skill; there is no adapters/ tree.
 test ! -e "$ROOT/adapters"
