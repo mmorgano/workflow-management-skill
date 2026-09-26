@@ -44,6 +44,19 @@ Before changing files:
 
 Do not permanently delete history as part of ordinary maintenance.
 
+## Invariants
+
+These rules hold for every project and cannot be changed by configuration:
+
+- **Open work is never moved out of `RECAP.md`.** Every task that is not
+  completed stays in the operational view. After maintenance, the number of open
+  tasks must be the same as before; if it differs, stop and report it.
+- Nothing is deleted. Everything that leaves `RECAP.md` is preserved in the
+  snapshot and in the archive files.
+- Task numbers are never changed or reused.
+
+Everything else below is a default that a project can adjust.
+
 ## Suggested Configuration
 
 Projects may add this optional section to `.workflow-config.json`:
@@ -56,6 +69,7 @@ Projects may add this optional section to `.workflow-config.json`:
     "hard_limit_kb": 60,
     "critical_limit_kb": 100,
     "keep_recent_completed": 10,
+    "keep_recent_days": null,
     "archive_closed_sections": true
   }
 }
@@ -63,6 +77,11 @@ Projects may add this optional section to `.workflow-config.json`:
 
 When this section is absent, maintenance is still allowed by user request, but
 use the default size guidance above.
+
+"Recently completed" is defined by count (`keep_recent_completed`, default 10).
+Set `keep_recent_days` to a number of days to define it by age instead, for
+example `28`; when both are set, keep an item if either criterion keeps it. A
+project may change these values freely; the invariants above still apply.
 
 ## Rotation Pattern
 
@@ -75,7 +94,9 @@ Prefer conservative rotation:
 4. Keep the current `RECAP.md` focused on open work, active risks, near-term
    next steps, and links to archived history.
 5. Preserve task numbers and links. Do not renumber tasks.
-6. Keep enough "recently completed" items to maintain continuity, usually the
+6. In a section that mixes open and completed items, move only the completed
+   detail that is no longer recent; the section and its open items stay.
+7. Keep enough "recently completed" items to maintain continuity, usually the
    latest 5-10 completed tasks or whatever the project config requests.
 
 ## Target RECAP Shape

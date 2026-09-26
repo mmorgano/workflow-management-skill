@@ -76,6 +76,7 @@ If the user asks for RECAP maintenance defaults, add:
     "hard_limit_kb": 60,
     "critical_limit_kb": 100,
     "keep_recent_completed": 10,
+    "keep_recent_days": null,
     "archive_closed_sections": true
   }
 }
