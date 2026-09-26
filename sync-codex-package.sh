@@ -34,6 +34,8 @@ SHARED_FILES=(
     references/steering.md
     references/tracking.md
     references/bootstrap.md
+    references/recap-maintenance.md
+    references/setup-guided.md
     references/compaction.md
     examples/basic-ai-context/README.md
     examples/basic-ai-context/RECAP.md

@@ -39,3 +39,13 @@ universal requirement.
 `RECAP.md` is the compiled view of open work. Group items by a useful project
 or area, keep status and blockers current, and update it when task state or
 priority changes. Link task files instead of duplicating their full plans.
+
+Keep `RECAP.md` operational, not archival. It should preserve open work,
+active blockers, current focus, near-term next steps, and short links to the
+records that contain detail. Do not let closed-task history accumulate there
+when the detailed task files, session files, or decision records already hold
+that history.
+
+When `RECAP.md` or `tasks/INDEX.md` has become large enough to harm context
+use, read `references/recap-maintenance.md` before loading the whole file into
+working context or rewriting it.

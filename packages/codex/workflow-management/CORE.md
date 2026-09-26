@@ -21,11 +21,14 @@ An adapter must instruct its agent to:
    the source of truth for task numbering.
 6. Update only records whose durable state changed. Do not create notes,
    meetings, roadmaps, tasks, or sprints merely because their directories exist.
-7. Respect explicit user instructions, repository guidance, and platform
+7. Keep operational views right-sized. When `RECAP.md` or `tasks/INDEX.md`
+   becomes large enough to hurt context use, read `references/recap-maintenance.md`
+   before loading or rewriting the full file.
+8. Respect explicit user instructions, repository guidance, and platform
    policy before these portable defaults.
-8. Ask before destructive operations, external publication, or execution of a
+9. Ask before destructive operations, external publication, or execution of a
    non-trivial plan when approval has not already been given.
-9. Run real session compaction only after explicit confirmation, normally after
+10. Run real session compaction only after explicit confirmation, normally after
    reviewing a dry run.
 
 ## Configuration and context resolution
@@ -89,6 +92,9 @@ records such as vision, roadmap, and decision records under `roadmap/`.
 - For starting, resuming, checkpointing, or closing sessions, read
   `references/sessions.md`.
 - For task lifecycle, numbering, or RECAP updates, read `references/tasks.md`.
+- For oversized `RECAP.md` or `tasks/INDEX.md`, RECAP rotation, or preserving
+  history while shrinking operational context, read
+  `references/recap-maintenance.md`.
 - For sprints, focus notes, meetings, or roadmaps, read
   `references/planning-and-notes.md`.
 - For project intake, steering documents, decision records, session rituals, or
