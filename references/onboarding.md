@@ -59,7 +59,9 @@ purpose, only after the picture that explains it.
 > we did, what is still to do, and what we decided.
 >
 > **What you gain.** Every new session starts by reading the notebook, so we
-> continue from where we left off, even if you use a different assistant.
+> continue from where we left off, even days later. The notebook is plain
+> files, so another assistant can pick it up too, as long as it has this same
+> skill installed.
 >
 > **What it looks like.**
 > - You say "start a session": I read the notebook, tell you where we left off
