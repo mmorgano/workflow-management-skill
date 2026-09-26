@@ -39,25 +39,36 @@ If the user skips, go to Step 3.
 
 ## Step 2 — The introduction
 
-Keep it to what fits on one screen. Cover, in plain words:
+Say the text below, translated faithfully into the user's language. Keep the
+structure and the plain words: do not add technical terms, and do not explain
+the optional features until the user asks. The word *context* is introduced once, on
+purpose, only after the picture that explains it.
 
-- **What it is:** a small folder of ordinary text files (the *context*) where
-  the assistant keeps your work state. You can read, edit, and back it up with
-  any tool.
-- **Why it exists:** AI chats forget. With a context, a new session starts by
-  reading where you left off instead of from zero, and it works across
-  assistants and computers.
-- **What it keeps:** *sessions* (what happened each day), *tasks* (what is
-  open, in progress, done), a short *RECAP* of open work, and optionally
-  sprints, notes, meetings, and decisions.
-- **How you use it:** ask to start a session, create a task, close the session.
-  The assistant does the bookkeeping and asks before anything risky.
-- **A few good habits:**
-  - close a session before you stop, so the next one can pick up;
-  - keep tasks small and describe the result you want;
-  - skim what the assistant writes; it is your record;
-  - keep your personal context private, and version it in a private place if
-    you use Git.
+> Here's the short version.
+>
+> **The problem.** AI chats have a short memory: tomorrow I won't remember what
+> we did today.
+>
+> **The idea.** I keep a small notebook for your work. It is just a folder of
+> ordinary text files on your computer, and you can open and edit them like any
+> other document. This notebook is called a *context*. In it I write down what
+> we did, what is still to do, and what we decided.
+>
+> **What you gain.** Every new session starts by reading the notebook, so we
+> continue from where we left off, even if you use a different assistant.
+>
+> **What it looks like.**
+> - You say "start a session": I read the notebook, tell you where we left off
+>   and ask what you want to do today.
+> - You say "add a task: ...": I write it down in your task list.
+> - You say "close the session": I save what happened and what comes next.
+>
+> **A few good habits.** Close the session before you stop. Describe a task by
+> the result you want. Glance at what I write: it is your notebook. Keep it
+> private.
+>
+> There is more (plans by period, meeting notes, decision records), but you do
+> not need any of it to begin.
 
 End by asking if they want to continue.
 
