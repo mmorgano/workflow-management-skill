@@ -98,6 +98,16 @@ list so compaction can summarize records in any configured language.
    done, what is missing, and the natural next step; then decide the session
    focus with the user.
 
+Starting a session reads and summarizes; it does not repair. If a record looks
+stale or inconsistent (for example a task marked "to do" that other records
+show as done), say so in the summary and ask before changing it. The only files
+created at start are the first-use records and today's session file.
+
+Write the summary as a person would say it: a short greeting, a few plain
+sentences, and one clear question about what to work on today. Use a list only
+when there are several parallel items, and name files by their short name
+rather than their full path.
+
 ## Checkpoints
 
 Update the current session when the work produces a durable decision, blocker,
