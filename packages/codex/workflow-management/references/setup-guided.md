@@ -113,6 +113,43 @@ the user explicitly asks.
 Never overwrite an existing pointer to a different context without explicit
 confirmation.
 
+### Platform path construction (agents)
+
+`CORE.md` documents the pointer location using `%USERPROFILE%` (CMD syntax) and
+`$HOME` / `$XDG_CONFIG_HOME` (POSIX syntax). These are documentation
+conventions, not executable expressions. When constructing the path through
+file-write tools rather than a shell script, build it safely:
+
+- **Windows**: read `$env:USERPROFILE` (PowerShell) or the `USERPROFILE`
+  environment variable, then join path segments with the OS separator.
+  Never concatenate the home directory string and `.config` or `.kiro` by hand —
+  this is the direct cause of paths like `C:\Users\Dell.kiro` instead of
+  `C:\Users\Dell\.kiro`.
+  Correct approach (equivalent to what `setup-skills.ps1` does, and compatible
+  with Windows PowerShell 5.1, where `Join-Path` only takes a single
+  `-ChildPath`):
+    $base = $env:USERPROFILE  # e.g. C:\Users\Dell
+    $pointer = Join-Path $base ".config\skill-workflow-management\context-path.json"
+  If `USERPROFILE` is empty or unresolvable, stop and report the error instead
+  of proceeding with an incomplete path.
+
+- **POSIX**: prefer `$XDG_CONFIG_HOME` when set; otherwise use `$HOME/.config`.
+  Use path-join semantics, not string concatenation.
+
+- **Reuse the verified value, do not retype it.** Whichever way the path was
+  computed and checked (`Join-Path`, `Test-Path`, an `os.path.join` equivalent,
+  or simply printing it), pass that exact same string, character for character,
+  as the destination argument to the file-write tool. Regenerating or
+  paraphrasing the path for the write call, even from the same recipe, is how
+  the separator gets dropped again after the check already passed: the
+  computed value was correct, but the call that actually wrote the file
+  reconstructed the string from scratch and repeated the original bug. Copy
+  the verified string; never re-derive it a second time.
+
+These rules apply specifically to agent-guided setup where the agent invokes
+file tools directly. The setup scripts (`setup-skills.ps1`, `setup-skills.sh`)
+already handle this correctly and do not need changes.
+
 ## Existing Contexts
 
 If `.workflow-config.json` already exists:
