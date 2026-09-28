@@ -61,6 +61,9 @@ After resolving a valid configuration, create only missing operational records:
   current date;
 - `sessions/SESSION_YYYY-MM-DD.md` for the current date.
 
+Create them with the exact structures in `references/setup-guided.md`
+§ "Starter records"; do not invent other formats.
+
 Never overwrite an existing record during initialization. Do not create
 `LAST_SESSION.md` before the first session is closed; its absence means there
 is no previous session.
