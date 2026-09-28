@@ -25,7 +25,8 @@ Before writing files, confirm:
   recommended: the context is attached through the workspace root and the
   machine-wide pointer is left untouched) or should also write the user-local
   context pointer;
-- `record_language`, defaulting to `English`;
+- `record_language`, defaulting to `English`. Store the language's English name
+  (`Italian`, `German`), not its local spelling (`Italiano`, `Deutsch`);
 - sprint settings, if requested;
 - compaction settings, if requested;
 - whether an existing config should be reused or intentionally replaced.
@@ -92,6 +93,65 @@ session and task lifecycle when needed.
 
 If the user explicitly wants starter records, keep them minimal and explain
 that they are operational state, not required setup files.
+
+### Starter records (exact structures)
+
+Whenever these records are created, here or by first-use initialization in
+`references/sessions.md`, use exactly the structures below. Do not invent other
+formats (for example `next_number: 1` or a different table layout). Translate
+headings and prose to `record_language`, but keep two things literal in every
+language: the line `Next available number: N` and the marker
+`<!-- workflow:work-done -->`.
+
+`RECAP.md`:
+
+```markdown
+# Recap - Open items
+
+## General
+
+| Ticket | Description | Status | Notes |
+|--------|-------------|--------|-------|
+```
+
+`tasks/INDEX.md`:
+
+```markdown
+# Task Index
+
+Next available number: 1
+```
+
+`sessions/SESSION_YYYY-MM-DD.md` (add a sprint line only when sprints are
+enabled):
+
+```markdown
+# Session YYYY-MM-DD
+
+- **Focus**: to be defined with the user.
+
+## Work done
+
+<!-- workflow:work-done -->
+- Context created.
+
+## Decisions
+
+-
+
+## Blockers
+
+-
+
+## Next steps
+
+-
+
+## Timesheet
+
+| Time | Activity |
+|------|----------|
+```
 
 ## User-Local Pointer
 
