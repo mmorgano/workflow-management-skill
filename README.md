@@ -8,7 +8,7 @@ tasks, decisions, project state, planning, meetings and durable knowledge stay
 in human-readable files that you can inspect and control.
 
 [MGM Garage Lab](https://mgmgaragelab.com/) ·
-[Project website](https://mgmgaragelab.com/workflow-management/) ·
+[Project website](https://mgmgaragelab.com/workflow-management-skill/) ·
 [Overview PDF](docs/workflow-management-overview.pdf) ·
 [Get started](#get-started) ·
 [Documentation](#documentation)
