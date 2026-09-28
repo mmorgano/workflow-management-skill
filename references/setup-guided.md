@@ -123,12 +123,12 @@ file-write tools rather than a shell script, build it safely:
 - **Windows**: read `$env:USERPROFILE` (PowerShell) or the `USERPROFILE`
   environment variable, then join path segments with the OS separator.
   Never concatenate the home directory string and `.config` or `.kiro` by hand —
-  this is the direct cause of paths like `C:\Users\Dell.kiro` instead of
-  `C:\Users\Dell\.kiro`.
+  this is the direct cause of paths like `C:\Users\<name>.kiro` instead of
+  `C:\Users\<name>\.kiro`.
   Correct approach (equivalent to what `setup-skills.ps1` does, and compatible
   with Windows PowerShell 5.1, where `Join-Path` only takes a single
   `-ChildPath`):
-    $base = $env:USERPROFILE  # e.g. C:\Users\Dell
+    $base = $env:USERPROFILE  # e.g. C:\Users\<name>
     $pointer = Join-Path $base ".config\skill-workflow-management\context-path.json"
   If `USERPROFILE` is empty or unresolvable, stop and report the error instead
   of proceeding with an incomplete path.
