@@ -195,6 +195,16 @@ directories. The assistant creates operational records during the first session.
 See [Getting started](docs/getting-started.md) for record language, workspace
 configuration, first-use behavior and intentional reconfiguration.
 
+**First-run scenarios the skill is tested against**
+
+1. A workspace that already has a context: the session starts from it.
+2. A workspace without a context yet: the assistant offers a short introduction
+   and proposes a name and location to confirm.
+3. **No workspace open** (a bare folder or nothing opened): the assistant says so
+   in one sentence and offers two choices, opening a workspace folder first
+   (recommended) or giving an explicit path. It creates nothing until you answer,
+   and an explicit path does not set a machine-wide default context.
+
 ## Documentation
 
 | Guide | Contents |

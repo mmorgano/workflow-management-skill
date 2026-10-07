@@ -113,6 +113,11 @@ test -f "$PACKAGE/references/onboarding.md"
 test ! -e "$ROOT/adapters"
 grep -Eq '^name: workflow-management[[:space:]]*$' "$ROOT/SKILL.md"
 
+# The no-workspace case is a first-class path in the session reference and in CORE.
+grep -Fq '## No workspace at all' "$ROOT/references/sessions.md"
+grep -Fq '## No workspace at all' "$PACKAGE/references/sessions.md"
+grep -Fq 'No workspace at all' "$ROOT/CORE.md"
+
 test ! -e "$ROOT/examples/basic-ai-context/LAST_SESSION.md"
 test ! -e "$PACKAGE/examples/basic-ai-context/LAST_SESSION.md"
 

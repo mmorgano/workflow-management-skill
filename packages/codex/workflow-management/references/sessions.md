@@ -3,6 +3,46 @@
 Read this reference when starting, resuming, checkpointing, or closing a work
 session.
 
+## No workspace at all
+
+Check this **before** "When no context resolves", but only after steps 1-4 of
+the resolution order in `CORE.md` have resolved nothing: an explicit path, a
+workspace-local context, a context in the working directory, or a user-local
+pointer that matches still win. It is a different situation: there is no
+workspace, not merely a workspace without a context yet.
+
+The reliable test is that **no workspace root is known** to the assistant: no
+folder is open, or the only folder is a plain directory that was not opened as a
+workspace. A working directory such as a bare or empty folder, the user's home
+directory, a drive root, Desktop or Downloads, or a system location is a hint,
+not proof. If any workspace root exists, even an empty one, skip this section.
+
+When it applies:
+
+1. Say it in one plain sentence, in the user's language, for example: "No
+   project folder is open in this chat, so I don't know where your workflow
+   notebook should live."
+2. Offer two clear choices and recommend the first:
+   - **Open a folder as the workspace first** (the project folder, or an empty
+     folder made for this), then start the session again. With a real workspace
+     the notebook is attached to it (`--here` / `-Here`) and every later
+     session finds it by itself.
+   - **Create the context at an explicit path** the user types or confirms now.
+     Never pick a directory silently. If you suggest one (for example
+     `ai_context_<name>` beside the current directory), say it is a guess to
+     confirm. Create it with `--here` / `-Here`, so the user-local pointer is
+     neither read nor written and no machine-wide `default` is set (a `default`
+     would attach this context to every workspace without its own entry). Use the
+     explicit path for this session and say so: next time the user opens this
+     folder as a workspace or gives the path again. Write `context-path.json`
+     with a `default` only if the user asks for a machine-wide context, after
+     saying that it applies to every workspace, and ask for confirmation first.
+3. Until the user chooses, read no record, create no file, and ask nothing
+   else. The first-run introduction (`references/onboarding.md`) may be offered
+   only after the choice is made.
+4. If the user declines both, proceed without workflow records for this
+   request.
+
 ## When no context resolves
 
 If the resolution order in `CORE.md` finds no context (no workspace root and no
@@ -35,8 +75,8 @@ never introduced again. Before asking for a path, offer that:
    or the current directory name — as `ai_context_<name>`. Propose a location
    the same way: beside the `.code-workspace` file when the workspace is saved,
    otherwise beside the workspace's main folder — and always outside the
-   project's own repository. When no folder is open, propose it in the current
-   working directory and say that this is a guess to confirm. Show name and
+   project's own repository. When no workspace is open at all, this step is not
+   reached: follow "No workspace at all" above instead. Show name and
    location and let the user change them; never create silently.
 2. On confirmation, run the setup script with the per-project flag —
    `setup-skills.ps1 -ContextRoot <path> -Here` or
