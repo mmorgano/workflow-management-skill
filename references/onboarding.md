@@ -16,6 +16,9 @@ tasks differs from a long project.
   that is present but unreadable, or that does not point back to its own
   directory, is a problem to report and ask about, not a reason to introduce
   the skill again.
+- **No workspace open.** Resolve that first (`references/sessions.md` § "No
+  workspace at all"): the introduction is offered only after the user has chosen
+  to open a workspace folder or has given an explicit path, never before.
 - **Nothing is remembered between workspaces.** In a second workspace with no
   context the offer appears again; the first question makes it a one-word skip.
   Do not write a "seen" marker; it would need the machine-wide pointer, which
@@ -32,6 +35,11 @@ tasks differs from a long project.
   setup, proceed without workflow records for this request.
 
 ## Step 1 — Offer
+
+If the user chose an explicit path because no workspace is open, say one line
+first: opening a real project folder as the workspace gives the best experience,
+because the notebook is then attached to it and found by itself in every later
+session.
 
 Greet, say in one sentence what you are, and offer the introduction:
 

@@ -60,3 +60,16 @@ Expected behavior:
    `LAST_SESSION.md`, `RECAP.md`, then sprint when relevant.
 3. Ask Codex to compact sessions. Confirm that it runs a dry-run first and does
    not perform real compaction without explicit confirmation.
+
+## No workspace open
+
+Start Codex with no workspace folder (a bare folder or nothing opened) and ask
+it to start a work session.
+
+1. Codex says in one sentence that no workspace is open.
+2. Codex offers two choices: open a workspace folder first (recommended) or give
+   an explicit path for the context.
+3. Codex reads no record and creates no file or directory until you answer, and
+   does not pick a directory on its own.
+4. If you give a path, the context is created with `-Here` / `--here`:
+   `context-path.json` is not written and no machine-wide `default` is set.

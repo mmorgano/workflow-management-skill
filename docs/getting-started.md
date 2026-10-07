@@ -245,3 +245,8 @@ The agent resolves the configured shared context, initializes missing first-use
 records without overwriting user data, creates today's session file, and shows
 the current work state. `LAST_SESSION.md` is created only when the first
 session is closed.
+
+If no workspace is open (a bare folder or nothing opened), the agent says so in
+one sentence and asks you to choose: open a workspace folder first (recommended,
+so the context is found by itself in every later session) or give an explicit
+path to create the context in. It creates nothing until you answer.

@@ -56,6 +56,11 @@ remains Bash-based and requires Python 3, `zip`, and `unzip` in WSL or Git Bash
   SessionStart hook for more reliable activation").
 - At session start, verify the current date before creating or naming any
   file — never guess it.
+- If no workspace is open at all (a bare folder, the home directory, nothing
+  opened) and the resolution order finds nothing, do not guess where the context lives: follow
+  `references/sessions.md` § "No workspace at all". Say so in one sentence,
+  offer to open a workspace folder first or to use an explicit path, and create
+  nothing until the user answers.
 - `tasks/INDEX.md` under `AI_CONTEXT_ROOT` is the durable, cross-session
   source of truth for task numbering. Claude Code's own in-session task
   tracker (TaskCreate/TaskUpdate) is for tracking steps within the current
@@ -89,6 +94,12 @@ context directory (not a real `AI_CONTEXT_ROOT`):
 5. Ask it to compact sessions. Confirm it runs
    `compact-sessions.sh --dry-run` first and does not run a real compaction
    without explicit confirmation.
+6. Start the assistant with **no workspace open** (a bare folder or nothing
+   opened) and ask it to start a work session. Confirm it says in one sentence
+   that no workspace is open, offers to open a workspace folder first or to use
+   an explicit path, reads and creates nothing until you answer, and never picks
+   a directory on its own. If you give a path, confirm it creates the context
+   with `--here` / `-Here` and does not write `context-path.json`.
 
 ## Language and integrations
 

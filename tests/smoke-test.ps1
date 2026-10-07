@@ -61,6 +61,12 @@ try {
     Assert-Condition (-not (Test-Path -LiteralPath (Join-Path $repositoryRoot 'adapters'))) 'Repository still contains an adapters/ tree.'
     $rootSkill = Get-Content -Raw -LiteralPath (Join-Path $repositoryRoot 'SKILL.md')
     Assert-Condition ($rootSkill -match '(?m)^name: workflow-management\s*$') 'Root SKILL.md is not the workflow-management skill.'
+    $rootSessions = Get-Content -Raw -LiteralPath (Join-Path $repositoryRoot 'references\sessions.md')
+    $packageSessions = Get-Content -Raw -LiteralPath (Join-Path $packageRoot 'references\sessions.md')
+    Assert-Condition ($rootSessions.Contains('## No workspace at all')) 'sessions.md lacks the no-workspace section.'
+    Assert-Condition ($packageSessions.Contains('## No workspace at all')) 'Package sessions.md lacks the no-workspace section.'
+    $rootCore = Get-Content -Raw -LiteralPath (Join-Path $repositoryRoot 'CORE.md')
+    Assert-Condition ($rootCore.Contains('No workspace at all')) 'CORE.md does not reference the no-workspace section.'
 
     $openAiMetadata = Get-Content -Raw -LiteralPath (Join-Path $packageRoot 'agents\openai.yaml')
     Assert-Condition ($openAiMetadata.Contains('$workflow-management')) 'Default prompt does not reference $workflow-management.'

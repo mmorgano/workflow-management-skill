@@ -56,7 +56,11 @@ agent-guided setup.
 
 Follow the context resolution order in `CORE.md`. Do not infer the shared
 context by broadly analyzing the workspace, and never attach a context that
-belongs to a different workspace. If the order resolves nothing, follow
+belongs to a different workspace. If no workspace is open at all (a bare
+folder, nothing opened) and the order resolves nothing, follow `references/sessions.md` § "No workspace at
+all" first: say so in one sentence, offer to open a workspace folder or to use
+an explicit path, and create nothing until the user answers. If the order
+resolves nothing, follow
 `references/sessions.md` § "When no context resolves": offer to create a
 context for this workspace; only if the user declines, ask for an existing
 path or proceed without workflow records.

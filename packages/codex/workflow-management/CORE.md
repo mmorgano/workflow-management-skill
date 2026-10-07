@@ -70,7 +70,11 @@ Resolve `<AI_CONTEXT_ROOT>` to the first of these that succeeds:
    - string form (legacy) — `{ "ai_context_root": "<context path>" }`.
 5. **Otherwise**, do not select an arbitrary directory and do not attach a
    context that belongs to a different workspace. Offer to create a context for
-   this workspace (see `references/sessions.md`) or ask for the path.
+   this workspace (see `references/sessions.md`) or ask for the path. When no
+   workspace is open at all, say so in one sentence and let the user choose
+   between opening a workspace folder (recommended) and naming an explicit path
+   (`references/sessions.md` § "No workspace at all"); never pick a directory
+   silently.
 
 Steps 2 and 3 (workspace-local) always precede step 4 (the machine-wide
 pointer), so independent projects on one machine each resolve to their own
