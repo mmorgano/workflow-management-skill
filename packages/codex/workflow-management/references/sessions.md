@@ -133,10 +133,14 @@ list so compaction can summarize records in any configured language.
 3. Initialize missing first-use records.
 4. Before reading them, measure the byte size of `RECAP.md` and
    `LAST_SESSION.md` with a tool that does not load their content. Default
-   limits are 15 KB and 2 KB; `recap_maintenance` in `.workflow-config.json`
-   overrides them. While reading, also note RECAP entries (a table row or a
-   list item) longer than 300 characters (`max_entry_chars`). If a size cannot
-   be measured, say so instead of estimating it.
+   limits are 15 KB and 2 KB; `soft_limit_kb` and `last_session_limit_kb`
+   under `recap_maintenance` in `.workflow-config.json` override them. If
+   `RECAP.md` is past `critical_limit_kb` (default 100), do not read it whole:
+   read `references/recap-maintenance.md` and only RECAP's headings and
+   open-work sections until a maintenance plan is agreed. While reading, also
+   note RECAP entries (a table row or a list item) longer than
+   `max_entry_chars` (default 300). If a size cannot be measured, say so
+   instead of estimating it.
 5. Read `RECAP.md`, `LAST_SESSION.md` when present, and the current sprint when
    enabled. When RECAP or a decision record points to steering documents, read
    them in the stated order and summarize the project state before selecting a
@@ -183,8 +187,9 @@ activity.
    constraints, or durable decisions changed.
 6. When the session changed the state of an area (a phase or milestone, a
    component's behavior or interface, a constraint, or a working rule), check
-   the steering documents in the reading order that describe it
-   (`references/steering.md` § Freshness). In the close summary, list each one
+   the steering documents in the reading order that describe it and that
+   step 5 did not already bring up to date (`references/steering.md`
+   § Freshness). In the close summary, list each one
    that is now superseded, with a short reason, or say that none is. The check
    reports; it does not rewrite. Offer to fix what it found, and record
    anything left unfixed as a follow-up in the session file. Move a `Verified`

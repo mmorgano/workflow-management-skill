@@ -156,14 +156,16 @@ states the other's facts.
 
 ## Status age at session start
 
-At every session start, unless status reports are retired, take the date of the
-latest report from its file name in `status/`, or `since` from
-`.workflow-config.json` when there is no report yet. If it is more than
+At every session start, unless status reports are retired, take the later of
+the latest report's date (from its file name in `status/`) and
+`status_reviewed_at`; with neither, use `since`. If that date is more than
 `status_max_age_days` old (default 28), state its age in days in the summary,
 and ask the user to choose:
 
-- **Create one now.** R2, R3, and R5 apply: if nothing changed since the last
-  report, say so and create none.
+- **Create one now.** This is the user's request, so it is an exception to R4
+  and to the rule that session start creates only its own records. R2, R3,
+  and R5 still apply: if nothing changed since the last report, say so, create
+  none, and set `status_reviewed_at` to today.
 - **Retire status reports.** Set `status_reports: false` in
   `.workflow-config.json`, remove the R6 pointer line from RECAP, and keep
   earlier reports unchanged. R4, R6, R8, and closure check 1 then no longer
@@ -172,6 +174,9 @@ and ask the user to choose:
 
 If the user postpones the choice, do not ask again in the same session. Change
 nothing until the user answers. Status reports resume only if the user asks.
+
+`status_max_age_days`, `status_reports`, and `status_reviewed_at` sit at the
+top level of `.workflow-config.json`, next to `management_tier`.
 
 ## Blockers ↔ Risk & Issue register — BR1–BR9
 

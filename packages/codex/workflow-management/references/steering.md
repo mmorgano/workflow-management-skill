@@ -128,7 +128,10 @@ avoid. Mark estimates and unverified claims as such.
 
 The decision record remains the authority: its `proposed` entry carries the id
 and links to the brief. Once the decision is made, record the outcome in the
-decision record only; the brief stays as the background of that date.
+decision record only; the brief stays as the background of that date. A
+project without a decision record names the brief
+`roadmap/briefs/YYYY-MM-DD-<slug>.md` and records the outcome in the session
+file; propose a decision record only if such decisions become frequent.
 
 ## Session Ritual
 

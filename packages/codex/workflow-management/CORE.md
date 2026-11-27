@@ -36,7 +36,9 @@ An adapter must instruct its agent to:
 The runtime configuration is `<AI_CONTEXT_ROOT>/.workflow-config.json`. It
 controls sprint and compaction behavior, the language of human-authored
 workflow records, and — when present — the `long-vision` tracking tier
-(`management_tier`, `since`, `declined_at`; see `references/tracking.md`).
+(`management_tier`, `since`, `declined_at`, and the status-report settings
+`status_max_age_days`, `status_reports`, `status_reviewed_at`; see
+`references/tracking.md`).
 Its absence means the project is simply not yet classified, not that it is
 excluded from ever activating the tier.
 

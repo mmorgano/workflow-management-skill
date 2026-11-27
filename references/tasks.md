@@ -46,7 +46,9 @@ priority changes.
 
 Each fact has one home. A RECAP entry for a task gives its number, short
 title, status, next step, and a link; it does not summarize the task file.
-Other entries link the session or focus note that holds the detail. Standing
+Other entries link the record that holds their detail: a roadmap section, a
+steering document, a status report, the Risk & Issue register, a session, or a
+focus note. Standing
 rules do not belong in RECAP. Entry length limits are in
 `references/recap-maintenance.md`.
 
