@@ -5,6 +5,10 @@ reviewing workflow tasks, or when updating `RECAP.md`.
 
 ## Task numbering
 
+An idea is not yet a task. Before creating a task that the user did not ask
+for, check the active milestone and the parking lot rules in
+`references/planning-and-notes.md`.
+
 `tasks/INDEX.md` is the source of truth for task numbers. Read it before
 creating a task, assign the next available number exactly once, register the
 new task, and increment the number. Never infer the next number from filenames
@@ -38,7 +42,15 @@ universal requirement.
 
 `RECAP.md` is the compiled view of open work. Group items by a useful project
 or area, keep status and blockers current, and update it when task state or
-priority changes. Link task files instead of duplicating their full plans.
+priority changes.
+
+Each fact has one home. A RECAP entry for a task gives its number, short
+title, status, next step, and a link; it does not summarize the task file.
+Other entries link the record that holds their detail: a roadmap section, a
+steering document, a status report, the Risk & Issue register, a session, or a
+focus note. Standing
+rules do not belong in RECAP. Entry length limits are in
+`references/recap-maintenance.md`.
 
 Keep `RECAP.md` operational, not archival. It should preserve open work,
 active blockers, current focus, near-term next steps, and short links to the

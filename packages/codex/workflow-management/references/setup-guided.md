@@ -73,9 +73,11 @@ If the user asks for RECAP maintenance defaults, add:
 {
   "recap_maintenance": {
     "enabled": true,
-    "soft_limit_kb": 40,
+    "soft_limit_kb": 15,
     "hard_limit_kb": 60,
     "critical_limit_kb": 100,
+    "last_session_limit_kb": 2,
+    "max_entry_chars": 300,
     "keep_recent_completed": 10,
     "keep_recent_days": null,
     "archive_closed_sections": true

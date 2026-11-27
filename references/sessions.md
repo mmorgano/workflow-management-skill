@@ -67,9 +67,9 @@ never introduced again. Before asking for a path, offer that:
    `long-vision` tier (`references/tracking.md`), and it tells you whether
    this is one project or several before any folder is created. Then, before
    scaffolding folders, git, or dependencies, walk `references/bootstrap.md`
-   for the non-code traps (naming, git identity, legal/IP, dependencies
-   between your own components, licensing) — ask only what this project's
-   shape actually raises.
+   for the early traps (naming, git identity, legal/IP, dependencies
+   between your own components, user interface, licensing) — ask only what
+   this project's shape actually raises.
 1. Propose a directory name, taking the first available of: the `.code-workspace`
    file name without its extension, the main project folder of the workspace,
    or the current directory name — as `ai_context_<name>`. Propose a location
@@ -131,12 +131,22 @@ list so compaction can summarize records in any configured language.
    `LAST_SESSION.md`, or any session, task, or sprint record until the root is
    resolved — reading them commits the session to that context.
 3. Initialize missing first-use records.
-4. Read `RECAP.md`, `LAST_SESSION.md` when present, and the current sprint when
+4. Before reading them, measure the byte size of `RECAP.md` and
+   `LAST_SESSION.md` with a tool that does not load their content. Default
+   limits are 15 KB and 2 KB; `soft_limit_kb` and `last_session_limit_kb`
+   under `recap_maintenance` in `.workflow-config.json` override them. If
+   `RECAP.md` is past `critical_limit_kb` (default 100), do not read it whole:
+   read `references/recap-maintenance.md` and only RECAP's headings and
+   open-work sections until a maintenance plan is agreed. While reading, also
+   note RECAP entries (a table row or a list item) longer than
+   `max_entry_chars` (default 300). If a size cannot be measured, say so
+   instead of estimating it.
+5. Read `RECAP.md`, `LAST_SESSION.md` when present, and the current sprint when
    enabled. When RECAP or a decision record points to steering documents, read
    them in the stated order and summarize the project state before selecting a
    focus.
-5. Create today's session file only when it is missing.
-6. Present a concise summary of the current sprint, open work, blockers, and
+6. Create today's session file only when it is missing.
+7. Present a concise summary of the current sprint, open work, blockers, and
    next steps. For steered projects, also include the current phase, what is
    done, what is missing, and the natural next step; then decide the session
    focus with the user.
@@ -145,6 +155,15 @@ Starting a session reads and summarizes; it does not repair. If a record looks
 stale or inconsistent (for example a task marked "to do" that other records
 show as done), say so in the summary and ask before changing it. The only files
 created at start are the first-use records and today's session file.
+
+When a limit is exceeded, say so in the summary in one or two sentences, with
+the measured value and the limit, and offer maintenance
+(`references/recap-maintenance.md`). Do not shorten, archive, or rewrite
+anything unless the user accepts. If the user declines, do not raise it again
+in the same session.
+
+When `management_tier` is `long-vision`, also run
+`references/tracking.md` § Status age at session start.
 
 Write the summary as a person would say it: a short greeting, a few plain
 sentences, and one clear question about what to work on today. Use a list only
@@ -160,17 +179,52 @@ activity.
 ## Close
 
 1. Finalize the current session, including next steps and timesheet.
-2. Create or update `LAST_SESSION.md` as a short pointer to the session file.
+2. Rewrite `LAST_SESSION.md` from the template below; replace its content
+   instead of appending to it.
 3. Update `RECAP.md` when open work changed.
 4. Update the active sprint when its tickets, blockers, or decisions changed.
 5. Update roadmap, vision, or decision records when phases, direction,
    constraints, or durable decisions changed.
-6. When `management_tier` is `long-vision`, also run the closure checks in
+6. When the session changed the state of an area (a phase or milestone, a
+   component's behavior or interface, a constraint, or a working rule), check
+   the steering documents in the reading order that describe it and that
+   step 5 did not already bring up to date (`references/steering.md`
+   § Freshness). In the close summary, list each one
+   that is now superseded, with a short reason, or say that none is. The check
+   reports; it does not rewrite. Offer to fix what it found, and record
+   anything left unfixed as a follow-up in the session file. Move a `Verified`
+   date only after checking the whole document.
+7. When `management_tier` is `long-vision`, also run the closure checks in
    `references/tracking.md` § Closure ritual (status trigger, blocker
    promotion, focus-to-decision promotion, consistency check). These are
-   additional conditional checks, not a heavier version of steps 1-5 above —
-   at every other tier, close ends at step 5.
+   additional conditional checks, not a heavier version of steps 1-6 above —
+   at every other tier, close ends at step 6.
 
-`LAST_SESSION.md` should contain the date, session file, relevant branches or
-projects, a one-line state summary, and the next priority. Translate visible
-labels using `record_language`.
+`LAST_SESSION.md` is a pointer with these fields and nothing else. Translate
+the visible labels using `record_language`.
+
+```markdown
+# Last session
+
+- **Date**: YYYY-MM-DD
+- **Session**: sessions/SESSION_YYYY-MM-DD.md
+- **Branches/projects**: <names only>
+- **State**: <one line>
+- **Next priority**: <up to three lines>
+```
+
+It has no room for summaries of the work done, start-up checklists, commands,
+or standing rules. If the existing file holds something recorded nowhere else,
+move it to its owner before rewriting the file:
+
+| Content | Owner |
+|---|---|
+| What happened, open follow-ups | the session file |
+| Detail or rules that apply to one task | the task file |
+| Durable decisions | the decision record |
+| Standing project rules and commands | the repository's agent instructions |
+| The user's personal working preferences | the assistant's memory, if it has one |
+
+Repository instructions and assistant memory are outside the workflow context:
+propose the change and ask before writing there. Until the content has a new
+home, keep it in the session file.

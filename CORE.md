@@ -36,7 +36,9 @@ An adapter must instruct its agent to:
 The runtime configuration is `<AI_CONTEXT_ROOT>/.workflow-config.json`. It
 controls sprint and compaction behavior, the language of human-authored
 workflow records, and — when present — the `long-vision` tracking tier
-(`management_tier`, `since`, `declined_at`; see `references/tracking.md`).
+(`management_tier`, `since`, `declined_at`, and the status-report settings
+`status_max_age_days`, `status_reports`, `status_reviewed_at`; see
+`references/tracking.md`).
 Its absence means the project is simply not yet classified, not that it is
 excluded from ever activating the tier.
 
@@ -107,8 +109,8 @@ records such as vision, roadmap, and decision records under `roadmap/`.
   Issue register, phase-gates, or the extended closure checks, read
   `references/tracking.md`.
 - For starting a new repository, component, package, or service from scratch —
-  naming, git identity, legal/IP, or dependencies between your own
-  components — read `references/bootstrap.md`.
+  naming, git identity, legal/IP, dependencies between your own components,
+  or user-interface foundations — read `references/bootstrap.md`.
 - For the first-run introduction and language choice when no context resolves,
   or for plain-language answers about what a folder is for, what else the
   skill can do, or tasks versus a long project, read `references/onboarding.md`.

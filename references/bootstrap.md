@@ -3,10 +3,10 @@
 Read this reference when a new repository or component is about to exist, as
 a companion to the "When no context resolves" branch in `references/sessions.md`.
 It does not replace the project intake in `references/steering.md` (what/why/
-success criteria/scope) — use that for framing. This file covers the
-non-code decisions an assistant otherwise tends to skip: the ones that do not
-show up in a code review and are expensive to fix once the first commit, or
-the first sibling component, already exists.
+success criteria/scope) — use that for framing. This file covers the early,
+mostly non-code decisions an assistant otherwise tends to skip: the ones that
+do not show up in a code review and are expensive to fix once the first commit,
+or the first sibling component, already exists.
 
 Do not run this as a fixed sequence. Ask only what the project's shape
 actually raises, propose sensible defaults, and scaffold what the user
@@ -80,6 +80,20 @@ When component B depends on component A and neither is published yet:
 - Record the intended real dependency (e.g. `component-a>=x,<y`) in the
   manifest even while using the local override, so switching to the
   published version later is a small change, not a rediscovery.
+
+## User interface
+
+Skip this section when the project has no user interface. Otherwise, ask
+before the first screen is built:
+
+- **Component library.** Which one will the project use, or will it build its
+  own components, and why? Check that its license and upkeep fit the project.
+- **Page templates.** Which page types will recur (for example list, detail,
+  form, dashboard), and what layout does each share? Agree on a template for the
+  ones already foreseen, and build new screens from them.
+
+"Not decided yet" is a valid answer: record it with the point by which it must
+be decided.
 
 ## Licensing and visibility
 
