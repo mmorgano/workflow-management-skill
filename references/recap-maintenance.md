@@ -22,14 +22,22 @@ Detailed history belongs in:
 
 Use judgment and the project shape, but treat these as default signals:
 
-- **Soft limit:** 30-40 KB. Prefer summarizing closed detail.
+- **Soft limit:** `RECAP.md` 15 KB. Checked at every session start
+  (`references/sessions.md`). Prefer summarizing closed detail.
 - **Hard limit:** 60 KB. Propose maintenance before adding more history.
 - **Critical:** 100 KB. Avoid loading or rewriting the whole file until a
   maintenance plan is agreed.
+- **`LAST_SESSION.md`:** 2 KB. It is a pointer: rewrite it as one at the next
+  close; it needs no archive.
+- **Entry length:** one short line per RECAP entry, up to 300 characters:
+  current status and next step. Detail stays in the linked record.
 
-When exact byte size is unavailable, use rough equivalents: hundreds of lines,
-long closed-task tables, or repeated historical sections are enough to trigger
-maintenance.
+Open work is never removed to meet a limit. If open entries alone exceed it
+even when each is short, say so and propose a higher limit for this project.
+
+Report a size that cannot be measured as unmeasured. Hundreds of lines, long
+closed-task tables, or repeated historical sections are still enough reason to
+propose maintenance.
 
 ## Maintenance Preconditions
 
@@ -65,9 +73,11 @@ Projects may add this optional section to `.workflow-config.json`:
 {
   "recap_maintenance": {
     "enabled": true,
-    "soft_limit_kb": 40,
+    "soft_limit_kb": 15,
     "hard_limit_kb": 60,
     "critical_limit_kb": 100,
+    "last_session_limit_kb": 2,
+    "max_entry_chars": 300,
     "keep_recent_completed": 10,
     "keep_recent_days": null,
     "archive_closed_sections": true

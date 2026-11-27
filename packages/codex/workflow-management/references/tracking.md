@@ -154,6 +154,25 @@ states the other's facts.
 ## Done / In progress / Next (as of YYYY-MM-DD)
 ```
 
+## Status age at session start
+
+At every session start, unless status reports are retired, take the date of the
+latest report from its file name in `status/`, or `since` from
+`.workflow-config.json` when there is no report yet. If it is more than
+`status_max_age_days` old (default 28), state its age in days in the summary,
+and ask the user to choose:
+
+- **Create one now.** R2, R3, and R5 apply: if nothing changed since the last
+  report, say so and create none.
+- **Retire status reports.** Set `status_reports: false` in
+  `.workflow-config.json`, remove the R6 pointer line from RECAP, and keep
+  earlier reports unchanged. R4, R6, R8, and closure check 1 then no longer
+  apply. The rest of the tier stays, including the Risk & Issue register and
+  phase-gates.
+
+If the user postpones the choice, do not ask again in the same session. Change
+nothing until the user answers. Status reports resume only if the user asks.
+
 ## Blockers ↔ Risk & Issue register — BR1–BR9
 
 - **BR1** — A session's `## Blocker` section is transient ("what blocks me
@@ -194,7 +213,8 @@ artifacts that *could* need an action.
 When `management_tier` is `long-vision`, `references/sessions.md` § Close adds
 these checks, each conditional on state, not on size:
 
-1. Check the R4 triggers; if one fired, create the new dated status.
+1. Check the R4 triggers; if one fired, create the new dated status (skip
+   when status reports are retired).
 2. Apply BR2: propose promoting any blocker that survived the session to an
    Issue.
 3. Review any focus notes touched this session: is there a decision node

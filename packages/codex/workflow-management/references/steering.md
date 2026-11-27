@@ -95,6 +95,41 @@ list the reading order for any assistant or teammate: vision, roadmap, decision
 record, RECAP, LAST_SESSION, tasks, and then component-specific documents only
 when needed.
 
+## Decision Briefs
+
+When a decision is hard (costly to reverse, with real trade-offs between
+viable options, or not something the user can judge from the record entry),
+write a brief for the user before asking them to decide. Routine choices do not
+need one.
+
+A brief is one page in `roadmap/briefs/<id>-<slug>.md`, separate from any
+design or implementation plan written for agents:
+
+```markdown
+# <id> — <the question the user has to answer>
+
+## Context
+What is happening and why a decision is needed now.
+
+## Example
+One concrete case showing what changes for the user.
+
+## Options and cost
+For each option: what it gives, what it costs (effort, money, time, what
+becomes harder later), and how hard it is to reverse.
+
+## Recommendation
+The recommended option, why, and what would change the recommendation.
+```
+
+Write it in plain language, in `record_language`, so that it can be read
+without opening the technical design. Explain any term or identifier it cannot
+avoid. Mark estimates and unverified claims as such.
+
+The decision record remains the authority: its `proposed` entry carries the id
+and links to the brief. Once the decision is made, record the outcome in the
+decision record only; the brief stays as the background of that date.
+
 ## Session Ritual
 
 For projects with steering documents, session start includes a short "state of
@@ -113,6 +148,23 @@ During close, update steering only when durable facts changed. A task completion
 usually updates RECAP and the session; a phase change updates the roadmap; a
 change of principle, scope, policy, or constraint updates the vision plus a new
 decision entry.
+
+## Freshness
+
+Each steering document in the session-start reading order carries a line near
+the top, with its label translated using `record_language`:
+
+`Verified: YYYY-MM-DD`
+
+The date means that on that day the whole document was compared with the
+current state of the project and still held. Editing part of a document does
+not move the date. A document without the line counts as never verified: add
+the line the first time the document is actually checked, not in bulk.
+
+In an append-only decision record, the line covers the entry states
+(`proposed`, `confirmed`, `superseded`); checking it never rewrites past
+entries. Operational records (RECAP, `LAST_SESSION.md`, sessions, tasks,
+sprints) do not carry the line.
 
 ## Document Hygiene
 
